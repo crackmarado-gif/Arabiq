@@ -1,0 +1,18 @@
+{
+  "name": "عربي – Apprendre l'arabe",
+  "short_name": "عربي",
+  "description": "Application d'apprentissage de l'arabe avec répétition espacée",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#0f0f1a",
+  "theme_color": "#7c6fff",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "https://via.placeholder.com/192x192/7c6fff/ffffff?text=%D8%B9",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
