@@ -1,0 +1,1347 @@
+<!DOCTYPE html>
+<html lang="fr" dir="ltr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>عربي – Apprendre l'arabe</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#7c6fff">
+<script>
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('./sw.js');
+  }
+</script>
+<style>
+/* ===== VARIABLES & RESET ===== */
+:root{
+  --bg:#0f0f1a;--bg2:#161628;--bg3:#1e1e38;--bg4:#252545;
+  --accent:#7c6fff;--accent2:#ff6b9d;--accent3:#43e8b0;--accent4:#ffd166;
+  --text:#f0f0ff;--text2:#a0a0c0;--text3:#606090;
+  --card:#1e1e35;--card2:#252540;--border:#2a2a50;
+  --green:#43e8b0;--red:#ff5c7c;--orange:#ffa451;--blue:#5caaff;
+  --r:14px;--r2:10px;--r3:6px;
+  --shadow:0 4px 24px rgba(0,0,0,.4);
+  --font:'Segoe UI',system-ui,sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden}
+.hidden{display:none!important}
+.arabic{font-family:'Arial','Noto Naskh Arabic',serif;font-size:1.4em;direction:rtl;unicode-bidi:bidi-override}
+.arabic-lg{font-size:2.2em}
+.arabic-xl{font-size:3em}
+
+/* ===== SCROLLBAR ===== */
+::-webkit-scrollbar{width:6px}
+::-webkit-scrollbar-track{background:var(--bg2)}
+::-webkit-scrollbar-thumb{background:var(--accent);border-radius:3px}
+
+/* ===== BUTTONS ===== */
+.btn{display:inline-flex;align-items:center;gap:8px;padding:12px 24px;border:none;border-radius:var(--r2);font-size:.95rem;font-weight:600;cursor:pointer;transition:all .2s;text-decoration:none}
+.btn-primary{background:linear-gradient(135deg,var(--accent),#5c4fff);color:#fff}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(124,111,255,.4)}
+.btn-success{background:linear-gradient(135deg,var(--green),#2db88a);color:#000}
+.btn-danger{background:linear-gradient(135deg,var(--red),#cc3058);color:#fff}
+.btn-ghost{background:transparent;border:1.5px solid var(--border);color:var(--text2)}
+.btn-ghost:hover{border-color:var(--accent);color:var(--accent)}
+.btn-sm{padding:8px 16px;font-size:.85rem}
+.btn:disabled{opacity:.4;cursor:not-allowed;transform:none!important}
+
+/* ===== INPUT ===== */
+input,textarea,select{background:var(--bg3);border:1.5px solid var(--border);border-radius:var(--r3);color:var(--text);font-family:var(--font);font-size:1rem;padding:10px 14px;width:100%;transition:border .2s;outline:none}
+input:focus,textarea:focus,select:focus{border-color:var(--accent)}
+
+/* ===== CARDS ===== */
+.card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:20px}
+.card2{background:var(--card2);border:1px solid var(--border);border-radius:var(--r2);padding:16px}
+
+/* ===== PROGRESS BAR ===== */
+.pbar{background:var(--bg3);border-radius:20px;height:8px;overflow:hidden}
+.pbar-fill{height:100%;border-radius:20px;transition:width .5s ease;background:linear-gradient(90deg,var(--accent),var(--accent2))}
+
+/* ===== TOAST ===== */
+#toast{position:fixed;bottom:24px;right:24px;z-index:9999;display:flex;flex-direction:column;gap:8px}
+.toast-item{padding:12px 20px;border-radius:var(--r2);font-size:.9rem;font-weight:500;animation:slideIn .3s ease;max-width:300px}
+.toast-success{background:#1a3d2e;border:1px solid var(--green);color:var(--green)}
+.toast-error{background:#3d1a1a;border:1px solid var(--red);color:var(--red)}
+.toast-info{background:#1a1a3d;border:1px solid var(--accent);color:var(--accent)}
+@keyframes slideIn{from{transform:translateX(100%);opacity:0}to{transform:translateX(0);opacity:1}}
+
+/* ===== MODAL ===== */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:1000;display:flex;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(4px)}
+.modal{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);max-width:520px;width:100%;max-height:90vh;overflow-y:auto;padding:28px}
+.modal-title{font-size:1.3rem;font-weight:700;margin-bottom:16px}
+
+/* ===== LAYOUT ===== */
+#app{min-height:100vh}
+#nav{position:fixed;bottom:0;left:0;right:0;background:var(--bg2);border-top:1px solid var(--border);display:flex;justify-content:space-around;padding:8px 0;z-index:100}
+.nav-item{display:flex;flex-direction:column;align-items:center;gap:3px;padding:6px 16px;border-radius:var(--r3);cursor:pointer;transition:all .2s;color:var(--text3);font-size:.75rem;border:none;background:none}
+.nav-item.active{color:var(--accent)}
+.nav-item svg{transition:transform .2s}
+.nav-item.active svg{transform:scale(1.15)}
+#main{padding:16px 16px 80px;max-width:720px;margin:0 auto}
+
+/* ===== HOME ===== */
+.streak-card{background:linear-gradient(135deg,#1a1040,#200d30);border:1px solid rgba(124,111,255,.3);border-radius:var(--r);padding:20px;display:flex;align-items:center;gap:16px;margin-bottom:16px}
+.streak-icon{font-size:2.4rem}
+.xp-bars{display:grid;gap:8px;margin:16px 0}
+.xp-row{display:flex;align-items:center;gap:10px;font-size:.85rem}
+.xp-label{width:80px;color:var(--text2);flex-shrink:0}
+.quest-card{background:linear-gradient(135deg,#0d1f3c,#0d2430);border:1px solid rgba(92,170,255,.3);border-radius:var(--r);padding:20px;margin-bottom:16px}
+.section-title{font-size:1.1rem;font-weight:700;margin:20px 0 12px;color:var(--text)}
+.badge-grid{display:flex;flex-wrap:wrap;gap:8px}
+.badge{padding:6px 12px;border-radius:20px;font-size:.8rem;font-weight:600;opacity:.4}
+.badge.earned{opacity:1}
+.badge-vocab{background:#1a1040;border:1px solid var(--accent);color:var(--accent)}
+.badge-streak{background:#3d1a00;border:1px solid var(--orange);color:var(--orange)}
+.badge-gram{background:#0d2430;border:1px solid var(--blue);color:var(--blue)}
+
+/* ===== FLASHCARD ===== */
+.fc-container{display:flex;flex-direction:column;align-items:center;gap:16px;padding:10px 0}
+.fc-card{width:100%;max-width:380px;min-height:220px;background:linear-gradient(135deg,var(--bg3),var(--bg2));border:1.5px solid var(--border);border-radius:18px;padding:32px 24px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;cursor:pointer;transition:transform .15s;user-select:none;position:relative;box-shadow:var(--shadow)}
+.fc-card:hover{transform:translateY(-3px)}
+.fc-card .arabic-xl{margin:10px 0;color:var(--accent4)}
+.fc-tag{position:absolute;top:12px;right:12px;font-size:.7rem;padding:3px 8px;border-radius:10px;background:var(--bg4);color:var(--text3)}
+.fc-meta{font-size:.8rem;color:var(--text3);margin-top:8px}
+.fc-answer{width:100%;max-width:380px}
+.fc-btns{display:flex;gap:10px;width:100%;max-width:380px;flex-wrap:wrap}
+.diff-btn{flex:1;padding:12px;border:none;border-radius:var(--r2);font-size:.85rem;font-weight:600;cursor:pointer;transition:all .2s}
+.diff-easy{background:#1a3d2e;color:var(--green);border:1.5px solid var(--green)}
+.diff-medium{background:#3d2d00;color:var(--orange);border:1.5px solid var(--orange)}
+.diff-hard{background:#3d1a1a;color:var(--red);border:1.5px solid var(--red)}
+.diff-btn:hover{filter:brightness(1.3);transform:translateY(-1px)}
+.fc-stats{display:flex;gap:16px;font-size:.82rem;color:var(--text2);flex-wrap:wrap;justify-content:center}
+
+/* ===== QUIZ ===== */
+.quiz-q{font-size:1.2rem;margin-bottom:20px;line-height:1.6}
+.quiz-options{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px}
+.quiz-opt{padding:14px;border-radius:var(--r2);border:1.5px solid var(--border);background:var(--bg3);cursor:pointer;transition:all .2s;text-align:center;font-size:.95rem}
+.quiz-opt:hover:not(.disabled){border-color:var(--accent);background:rgba(124,111,255,.1)}
+.quiz-opt.correct{border-color:var(--green);background:rgba(67,232,176,.1);color:var(--green)}
+.quiz-opt.wrong{border-color:var(--red);background:rgba(255,92,124,.1);color:var(--red)}
+.quiz-opt.disabled{cursor:not-allowed}
+.feedback-box{padding:16px;border-radius:var(--r2);margin-top:10px;line-height:1.6}
+.feedback-correct{background:rgba(67,232,176,.08);border:1px solid var(--green)}
+.feedback-wrong{background:rgba(255,92,124,.08);border:1px solid var(--red)}
+
+/* ===== PLACEMENT TEST ===== */
+.test-wrap{max-width:500px;margin:0 auto}
+.test-header{text-align:center;margin-bottom:24px}
+.letter-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(60px,1fr));gap:8px}
+.letter-btn{padding:12px;border-radius:var(--r2);background:var(--bg3);border:1.5px solid var(--border);cursor:pointer;text-align:center;transition:all .2s;font-family:'Arial',serif;font-size:1.3rem}
+.letter-btn.selected{border-color:var(--accent);background:rgba(124,111,255,.15)}
+.letter-btn.correct{border-color:var(--green);background:rgba(67,232,176,.1)}
+.letter-btn.wrong{border-color:var(--red);background:rgba(255,92,124,.1)}
+
+/* ===== DASHBOARD ===== */
+.stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px}
+.stat-card{background:var(--card2);border:1px solid var(--border);border-radius:var(--r2);padding:16px;text-align:center}
+.stat-val{font-size:1.8rem;font-weight:700;margin-bottom:4px}
+.stat-lbl{font-size:.8rem;color:var(--text2)}
+.heatmap{display:grid;grid-template-columns:repeat(26,1fr);gap:2px;margin:12px 0}
+.hm-cell{aspect-ratio:1;border-radius:2px;background:var(--bg3)}
+.hm-0{background:var(--bg3)}
+.hm-1{background:rgba(124,111,255,.25)}
+.hm-2{background:rgba(124,111,255,.5)}
+.hm-3{background:rgba(124,111,255,.75)}
+.hm-4{background:var(--accent)}
+
+/* ===== DIALOGUE ===== */
+.dialogue-wrap{max-width:440px;margin:0 auto}
+.dialogue-msg{margin:8px 0;padding:12px 16px;border-radius:var(--r2);max-width:85%;line-height:1.6}
+.msg-a{background:var(--bg3);border:1px solid var(--border);margin-right:auto}
+.msg-b{background:rgba(124,111,255,.12);border:1px solid rgba(124,111,255,.3);margin-left:auto;text-align:right}
+.msg-arabic{font-size:1.2em;direction:rtl;display:block;margin-bottom:4px}
+.msg-trans{font-size:.8rem;color:var(--text2)}
+
+/* ===== SETTINGS ===== */
+.setting-row{display:flex;align-items:center;justify-content:space-between;padding:14px 0;border-bottom:1px solid var(--border)}
+.setting-row:last-child{border:none}
+.toggle{position:relative;width:46px;height:26px;flex-shrink:0}
+.toggle input{opacity:0;width:0;height:0}
+.slider{position:absolute;inset:0;background:var(--bg3);border-radius:20px;cursor:pointer;transition:.3s;border:1.5px solid var(--border)}
+.slider:before{content:'';position:absolute;width:18px;height:18px;left:3px;top:50%;transform:translateY(-50%);background:var(--text3);border-radius:50%;transition:.3s}
+.toggle input:checked+.slider{background:var(--accent);border-color:var(--accent)}
+.toggle input:checked+.slider:before{transform:translate(20px,-50%);background:#fff}
+
+/* ===== RESPONSIVE ===== */
+@media(min-width:600px){
+  .quiz-options{grid-template-columns:1fr 1fr}
+  .stats-grid{grid-template-columns:repeat(4,1fr)}
+}
+@media(max-width:400px){
+  .quiz-options{grid-template-columns:1fr}
+  .fc-btns{flex-direction:column}
+}
+
+/* ===== ANIMATIONS ===== */
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.05)}}
+@keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.fade-in{animation:fadeIn .3s ease}
+.xp-pop{animation:pulse .4s ease}
+</style>
+</head>
+<body>
+<div id="app">
+  <div id="screen-test" class="hidden"></div>
+  <div id="screen-home" class="hidden">
+    <div id="main">
+      <div id="home-content"></div>
+    </div>
+  </div>
+  <div id="screen-learn" class="hidden">
+    <div id="main" id="learn-main">
+      <div id="learn-content"></div>
+    </div>
+  </div>
+  <div id="screen-review" class="hidden">
+    <div id="main">
+      <div id="review-content"></div>
+    </div>
+  </div>
+  <div id="screen-dashboard" class="hidden">
+    <div id="main">
+      <div id="dashboard-content"></div>
+    </div>
+  </div>
+  <div id="screen-settings" class="hidden">
+    <div id="main">
+      <div id="settings-content"></div>
+    </div>
+  </div>
+  <nav id="nav" class="hidden">
+    <button class="nav-item" data-screen="home" onclick="showScreen('home')">
+      <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9,22 9,12 15,12 15,22"/></svg>
+      Accueil
+    </button>
+    <button class="nav-item" data-screen="learn" onclick="showScreen('learn')">
+      <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+      Apprendre
+    </button>
+    <button class="nav-item" data-screen="review" onclick="showScreen('review')">
+      <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12,6 12,12 16,14"/></svg>
+      Réviser
+    </button>
+    <button class="nav-item" data-screen="dashboard" onclick="showScreen('dashboard')">
+      <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+      Stats
+    </button>
+    <button class="nav-item" data-screen="settings" onclick="showScreen('settings')">
+      <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06A1.65 1.65 0 0015 19.4a1.65 1.65 0 00-1.65 1.5V21a2 2 0 01-4 0v-.09A1.65 1.65 0 008 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.6 15a1.65 1.65 0 00-1.5-1.65H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.6a1.65 1.65 0 001.65-1.5V3a2 2 0 014 0v.09A1.65 1.65 0 0015 4.6a1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.5 1.65H21a2 2 0 010 4h-.09A1.65 1.65 0 0019.4 15z"/></svg>
+      Réglages
+    </button>
+  </nav>
+  <div id="toast"></div>
+</div>
+
+<script>
+/* ============================================================
+   DATA – Alphabet, Vocabulary, Phrases, Dialogues
+   ============================================================ */
+const ALPHABET=[
+  {ar:'ا',name:'Alif',trans:'a/â',sound:'a long'},
+  {ar:'ب',name:'Ba',trans:'b',sound:'b'},
+  {ar:'ت',name:'Ta',trans:'t',sound:'t'},
+  {ar:'ث',name:'Tha',trans:'th',sound:'th (anglais)'},
+  {ar:'ج',name:'Jim',trans:'j',sound:'dj'},
+  {ar:'ح',name:'Ha',trans:'ḥ',sound:'h guttural'},
+  {ar:'خ',name:'Kha',trans:'kh',sound:'kh'},
+  {ar:'د',name:'Dal',trans:'d',sound:'d'},
+  {ar:'ذ',name:'Dhal',trans:'dh',sound:'dh (anglais)'},
+  {ar:'ر',name:'Ra',trans:'r',sound:'r roulé'},
+  {ar:'ز',name:'Zayn',trans:'z',sound:'z'},
+  {ar:'س',name:'Sin',trans:'s',sound:'s'},
+  {ar:'ش',name:'Shin',trans:'sh',sound:'ch'},
+  {ar:'ص',name:'Sad',trans:'ṣ',sound:'s emphatique'},
+  {ar:'ض',name:'Dad',trans:'ḍ',sound:'d emphatique'},
+  {ar:'ط',name:'Ta',trans:'ṭ',sound:'t emphatique'},
+  {ar:'ظ',name:'Dha',trans:'ẓ',sound:'dh emphatique'},
+  {ar:'ع',name:'Ayn',trans:'ʿ',sound:'ayn'},
+  {ar:'غ',name:'Ghayn',trans:'gh',sound:'gh'},
+  {ar:'ف',name:'Fa',trans:'f',sound:'f'},
+  {ar:'ق',name:'Qaf',trans:'q',sound:'q'},
+  {ar:'ك',name:'Kaf',trans:'k',sound:'k'},
+  {ar:'ل',name:'Lam',trans:'l',sound:'l'},
+  {ar:'م',name:'Mim',trans:'m',sound:'m'},
+  {ar:'ن',name:'Nun',trans:'n',sound:'n'},
+  {ar:'ه',name:'Ha',trans:'h',sound:'h'},
+  {ar:'و',name:'Waw',trans:'w/û',sound:'w ou ou'},
+  {ar:'ي',name:'Ya',trans:'y/î',sound:'y ou i'},
+  {ar:'ء',name:'Hamza',trans:'ʾ',sound:'occlusive glottale'},
+  {ar:'ة',name:'Ta marbuta',trans:'a/at',sound:'a féminin'}
+];
+
+const VOCAB=[
+  // Salutations
+  {ar:'مرحباً',fr:'Bonjour / Salut',trans:'marhaban',cat:'salutations',level:1},
+  {ar:'السلام عليكم',fr:'La paix soit sur vous',trans:'as-salâmu ʿalaykum',cat:'salutations',level:1},
+  {ar:'وعليكم السلام',fr:'Et sur vous la paix',trans:'wa ʿalaykum as-salâm',cat:'salutations',level:1},
+  {ar:'صباح الخير',fr:'Bonjour (matin)',trans:'ṣabâḥ al-khayr',cat:'salutations',level:1},
+  {ar:'مساء الخير',fr:'Bonsoir',trans:'masâʾ al-khayr',cat:'salutations',level:1},
+  {ar:'إلى اللقاء',fr:'Au revoir',trans:'ilâ l-liqâʾ',cat:'salutations',level:1},
+  {ar:'شكراً',fr:'Merci',trans:'shukran',cat:'salutations',level:1},
+  {ar:'عفواً',fr:'De rien / Pardon',trans:'ʿafwan',cat:'salutations',level:1},
+  {ar:'نعم',fr:'Oui',trans:'naʿam',cat:'salutations',level:1},
+  {ar:'لا',fr:'Non',trans:'lâ',cat:'salutations',level:1},
+  {ar:'من فضلك',fr:'S\'il te plaît',trans:'min faḍlak',cat:'salutations',level:1},
+  {ar:'كيف حالك؟',fr:'Comment vas-tu ?',trans:'kayfa ḥâluk?',cat:'salutations',level:1},
+  {ar:'بخير، شكراً',fr:'Bien, merci',trans:'bi-khayr, shukran',cat:'salutations',level:1},
+  // Nombres
+  {ar:'صفر',fr:'Zéro',trans:'ṣifr',cat:'nombres',level:1},
+  {ar:'واحد',fr:'Un',trans:'wâḥid',cat:'nombres',level:1},
+  {ar:'اثنان',fr:'Deux',trans:'ithnân',cat:'nombres',level:1},
+  {ar:'ثلاثة',fr:'Trois',trans:'thalâtha',cat:'nombres',level:1},
+  {ar:'أربعة',fr:'Quatre',trans:'arbaʿa',cat:'nombres',level:1},
+  {ar:'خمسة',fr:'Cinq',trans:'khamsa',cat:'nombres',level:1},
+  {ar:'ستة',fr:'Six',trans:'sitta',cat:'nombres',level:1},
+  {ar:'سبعة',fr:'Sept',trans:'sabʿa',cat:'nombres',level:1},
+  {ar:'ثمانية',fr:'Huit',trans:'thamâniya',cat:'nombres',level:1},
+  {ar:'تسعة',fr:'Neuf',trans:'tisʿa',cat:'nombres',level:1},
+  {ar:'عشرة',fr:'Dix',trans:'ʿashara',cat:'nombres',level:1},
+  {ar:'عشرون',fr:'Vingt',trans:'ʿishrûn',cat:'nombres',level:2},
+  {ar:'مئة',fr:'Cent',trans:'miʾa',cat:'nombres',level:2},
+  {ar:'ألف',fr:'Mille',trans:'alf',cat:'nombres',level:2},
+  // Famille
+  {ar:'أب',fr:'Père',trans:'ab',cat:'famille',level:1},
+  {ar:'أم',fr:'Mère',trans:'umm',cat:'famille',level:1},
+  {ar:'أخ',fr:'Frère',trans:'akh',cat:'famille',level:1},
+  {ar:'أخت',fr:'Sœur',trans:'ukht',cat:'famille',level:1},
+  {ar:'ابن',fr:'Fils',trans:'ibn',cat:'famille',level:1},
+  {ar:'بنت',fr:'Fille',trans:'bint',cat:'famille',level:1},
+  {ar:'زوج',fr:'Mari',trans:'zawj',cat:'famille',level:2},
+  {ar:'زوجة',fr:'Femme (épouse)',trans:'zawja',cat:'famille',level:2},
+  {ar:'جد',fr:'Grand-père',trans:'jadd',cat:'famille',level:2},
+  {ar:'جدة',fr:'Grand-mère',trans:'jadda',cat:'famille',level:2},
+  {ar:'عم',fr:'Oncle (paternel)',trans:'ʿamm',cat:'famille',level:2},
+  {ar:'خال',fr:'Oncle (maternel)',trans:'khâl',cat:'famille',level:2},
+  // Nourriture
+  {ar:'طعام',fr:'Nourriture',trans:'ṭaʿâm',cat:'nourriture',level:1},
+  {ar:'ماء',fr:'Eau',trans:'mâʾ',cat:'nourriture',level:1},
+  {ar:'خبز',fr:'Pain',trans:'khubz',cat:'nourriture',level:1},
+  {ar:'أرز',fr:'Riz',trans:'aruzz',cat:'nourriture',level:1},
+  {ar:'لحم',fr:'Viande',trans:'laḥm',cat:'nourriture',level:1},
+  {ar:'دجاج',fr:'Poulet',trans:'dajâj',cat:'nourriture',level:1},
+  {ar:'سمك',fr:'Poisson',trans:'samak',cat:'nourriture',level:1},
+  {ar:'فاكهة',fr:'Fruit',trans:'fâkiha',cat:'nourriture',level:1},
+  {ar:'خضروات',fr:'Légumes',trans:'khuḍarwât',cat:'nourriture',level:1},
+  {ar:'حليب',fr:'Lait',trans:'ḥalîb',cat:'nourriture',level:1},
+  {ar:'قهوة',fr:'Café',trans:'qahwa',cat:'nourriture',level:1},
+  {ar:'شاي',fr:'Thé',trans:'shây',cat:'nourriture',level:1},
+  {ar:'عصير',fr:'Jus',trans:'ʿaṣîr',cat:'nourriture',level:1},
+  {ar:'تفاح',fr:'Pomme',trans:'tuffâḥ',cat:'nourriture',level:2},
+  {ar:'موز',fr:'Banane',trans:'mawz',cat:'nourriture',level:2},
+  {ar:'برتقال',fr:'Orange',trans:'burtuqâl',cat:'nourriture',level:2},
+  // Déplacements
+  {ar:'مطار',fr:'Aéroport',trans:'maṭâr',cat:'déplacements',level:1},
+  {ar:'فندق',fr:'Hôtel',trans:'funduq',cat:'déplacements',level:1},
+  {ar:'شارع',fr:'Rue',trans:'shâriʿ',cat:'déplacements',level:1},
+  {ar:'سيارة',fr:'Voiture',trans:'sayyâra',cat:'déplacements',level:1},
+  {ar:'قطار',fr:'Train',trans:'qiṭâr',cat:'déplacements',level:1},
+  {ar:'حافلة',fr:'Bus',trans:'ḥâfila',cat:'déplacements',level:1},
+  {ar:'مدرسة',fr:'École',trans:'madrasa',cat:'déplacements',level:1},
+  {ar:'مستشفى',fr:'Hôpital',trans:'mustashfâ',cat:'déplacements',level:1},
+  {ar:'سوق',fr:'Marché / Souk',trans:'sûq',cat:'déplacements',level:1},
+  {ar:'يميناً',fr:'À droite',trans:'yamînan',cat:'déplacements',level:2},
+  {ar:'يساراً',fr:'À gauche',trans:'yasâran',cat:'déplacements',level:2},
+  {ar:'أمام',fr:'Devant',trans:'amâm',cat:'déplacements',level:2},
+  {ar:'خلف',fr:'Derrière',trans:'khalf',cat:'déplacements',level:2},
+  // Verbes essentiels
+  {ar:'ذهب',fr:'Aller (passé)',trans:'dhahaba',cat:'verbes',level:1},
+  {ar:'يذهب',fr:'Aller (présent)',trans:'yadhabu',cat:'verbes',level:1},
+  {ar:'أكل',fr:'Manger (passé)',trans:'akala',cat:'verbes',level:1},
+  {ar:'يأكل',fr:'Manger (présent)',trans:'yaʾkulu',cat:'verbes',level:1},
+  {ar:'شرب',fr:'Boire (passé)',trans:'shariba',cat:'verbes',level:1},
+  {ar:'يشرب',fr:'Boire (présent)',trans:'yashrabu',cat:'verbes',level:1},
+  {ar:'تكلّم',fr:'Parler (passé)',trans:'takallama',cat:'verbes',level:1},
+  {ar:'يتكلّم',fr:'Parler (présent)',trans:'yatakallamu',cat:'verbes',level:1},
+  {ar:'كتب',fr:'Écrire (passé)',trans:'kataba',cat:'verbes',level:1},
+  {ar:'يكتب',fr:'Écrire (présent)',trans:'yaktuba',cat:'verbes',level:1},
+  {ar:'قرأ',fr:'Lire (passé)',trans:'qaraʾa',cat:'verbes',level:1},
+  {ar:'يقرأ',fr:'Lire (présent)',trans:'yaqraʾu',cat:'verbes',level:1},
+  {ar:'فهم',fr:'Comprendre (passé)',trans:'fahima',cat:'verbes',level:2},
+  {ar:'يفهم',fr:'Comprendre (présent)',trans:'yafhamu',cat:'verbes',level:2},
+  {ar:'أراد',fr:'Vouloir (passé)',trans:'arâda',cat:'verbes',level:2},
+  {ar:'يريد',fr:'Vouloir (présent)',trans:'yurîdu',cat:'verbes',level:1},
+  {ar:'استطاع',fr:'Pouvoir (passé)',trans:'istaṭâʿa',cat:'verbes',level:2},
+  {ar:'يستطيع',fr:'Pouvoir (présent)',trans:'yastaṭîʿu',cat:'verbes',level:2},
+  // Temps
+  {ar:'الآن',fr:'Maintenant',trans:'al-ân',cat:'temps',level:1},
+  {ar:'اليوم',fr:'Aujourd\'hui',trans:'al-yawm',cat:'temps',level:1},
+  {ar:'غداً',fr:'Demain',trans:'ghadan',cat:'temps',level:1},
+  {ar:'أمس',fr:'Hier',trans:'ams',cat:'temps',level:1},
+  {ar:'صباح',fr:'Matin',trans:'ṣabâḥ',cat:'temps',level:1},
+  {ar:'مساء',fr:'Soir',trans:'masâʾ',cat:'temps',level:1},
+  {ar:'ليل',fr:'Nuit',trans:'layl',cat:'temps',level:1},
+  {ar:'أسبوع',fr:'Semaine',trans:'usbûʿ',cat:'temps',level:1},
+  {ar:'شهر',fr:'Mois',trans:'shahr',cat:'temps',level:1},
+  {ar:'سنة',fr:'Année',trans:'sana',cat:'temps',level:1},
+  // Couleurs
+  {ar:'أحمر',fr:'Rouge',trans:'aḥmar',cat:'couleurs',level:1},
+  {ar:'أزرق',fr:'Bleu',trans:'azraq',cat:'couleurs',level:1},
+  {ar:'أخضر',fr:'Vert',trans:'akhḍar',cat:'couleurs',level:1},
+  {ar:'أصفر',fr:'Jaune',trans:'aṣfar',cat:'couleurs',level:1},
+  {ar:'أبيض',fr:'Blanc',trans:'abyaḍ',cat:'couleurs',level:1},
+  {ar:'أسود',fr:'Noir',trans:'aswad',cat:'couleurs',level:1},
+  {ar:'بني',fr:'Marron',trans:'bunnî',cat:'couleurs',level:2},
+  // Corps
+  {ar:'رأس',fr:'Tête',trans:'raʾs',cat:'corps',level:2},
+  {ar:'يد',fr:'Main',trans:'yad',cat:'corps',level:2},
+  {ar:'رجل',fr:'Pied/Jambe',trans:'rijl',cat:'corps',level:2},
+  {ar:'عين',fr:'Œil',trans:'ʿayn',cat:'corps',level:2},
+  {ar:'أذن',fr:'Oreille',trans:'udhun',cat:'corps',level:2},
+  {ar:'قلب',fr:'Cœur',trans:'qalb',cat:'corps',level:2},
+  // Survie
+  {ar:'مساعدة',fr:'Aide',trans:'musâʿada',cat:'survie',level:1},
+  {ar:'خطر',fr:'Danger',trans:'khaṭar',cat:'survie',level:1},
+  {ar:'طبيب',fr:'Médecin',trans:'ṭabîb',cat:'survie',level:1},
+  {ar:'دواء',fr:'Médicament',trans:'dawâʾ',cat:'survie',level:2},
+  {ar:'شرطة',fr:'Police',trans:'shurṭa',cat:'survie',level:1},
+  {ar:'لا أفهم',fr:'Je ne comprends pas',trans:'lâ afham',cat:'survie',level:1},
+  {ar:'هل تتكلم الفرنسية؟',fr:'Parles-tu français?',trans:'hal tatakallam al-faransiyya?',cat:'survie',level:2},
+  // Grammaire basique
+  {ar:'أنا',fr:'Je / Moi',trans:'anâ',cat:'pronoms',level:1},
+  {ar:'أنت',fr:'Tu (masc.)',trans:'anta',cat:'pronoms',level:1},
+  {ar:'أنتِ',fr:'Tu (fém.)',trans:'anti',cat:'pronoms',level:1},
+  {ar:'هو',fr:'Il',trans:'huwa',cat:'pronoms',level:1},
+  {ar:'هي',fr:'Elle',trans:'hiya',cat:'pronoms',level:1},
+  {ar:'نحن',fr:'Nous',trans:'naḥnu',cat:'pronoms',level:1},
+  {ar:'هم',fr:'Ils',trans:'hum',cat:'pronoms',level:1},
+  {ar:'في',fr:'Dans / En',trans:'fî',cat:'prépositions',level:1},
+  {ar:'على',fr:'Sur',trans:'ʿalâ',cat:'prépositions',level:1},
+  {ar:'من',fr:'De / Depuis',trans:'min',cat:'prépositions',level:1},
+  {ar:'إلى',fr:'Vers / À',trans:'ilâ',cat:'prépositions',level:1},
+  {ar:'مع',fr:'Avec',trans:'maʿa',cat:'prépositions',level:1},
+  {ar:'عند',fr:'Chez / Avoir',trans:'ʿinda',cat:'prépositions',level:2},
+];
+
+const PHRASES=[
+  {ar:'أنا أتعلم العربية',fr:'J\'apprends l\'arabe',trans:'anâ ataʿallamu l-ʿarabiyya',level:1},
+  {ar:'اسمي ...',fr:'Je m\'appelle ...',trans:'ismî ...',level:1},
+  {ar:'كم عمرك؟',fr:'Quel âge as-tu ?',trans:'kam ʿumruk?',level:1},
+  {ar:'أنا من فرنسا',fr:'Je suis de France',trans:'anâ min faransâ',level:1},
+  {ar:'أريد ماءً من فضلك',fr:'Je veux de l\'eau svp',trans:'urîdu mâʾan min faḍlak',level:1},
+  {ar:'كم الثمن؟',fr:'Combien ça coûte ?',trans:'kam ath-thaman?',level:1},
+  {ar:'أين الحمام؟',fr:'Où sont les toilettes ?',trans:'ayna l-ḥammâm?',level:1},
+  {ar:'أنا لا أعرف',fr:'Je ne sais pas',trans:'anâ lâ aʿrif',level:1},
+  {ar:'هل يمكنك مساعدتي؟',fr:'Peux-tu m\'aider ?',trans:'hal yumkinuka musâʿadatî?',level:2},
+  {ar:'أحب الطعام العربي',fr:'J\'aime la cuisine arabe',trans:'uḥibbu ṭ-ṭaʿâm al-ʿarabî',level:2},
+  {ar:'الطقس جميل اليوم',fr:'Le temps est beau aujourd\'hui',trans:'aṭ-ṭaqs jamîl al-yawm',level:2},
+  {ar:'أنا مشغول الآن',fr:'Je suis occupé maintenant',trans:'anâ mashghûl al-ân',level:2},
+  {ar:'هل تفهم ما أقول؟',fr:'Comprends-tu ce que je dis ?',trans:'hal tafhamu mâ aqûl?',level:3},
+  {ar:'يسعدني مقابلتك',fr:'Heureux de te rencontrer',trans:'yusʿidunî muqâbalatuk',level:2},
+  {ar:'هل هذا المكان قريب؟',fr:'Est-ce que cet endroit est proche ?',trans:'hal hâdhâ l-makân qarîb?',level:2},
+];
+
+const DIALOGUES=[
+  {
+    title:'À la boulangerie',
+    level:1,
+    turns:[
+      {speaker:'B',ar:'أهلاً، كيف يمكنني مساعدتك؟',fr:'Bonjour, comment puis-je vous aider ?',trans:'ahlan, kayfa yumkinunî musâʿadatuk?'},
+      {speaker:'A',ar:'أريد خبزاً من فضلك',fr:'Je voudrais du pain s\'il vous plaît',trans:'urîdu khubzan min faḍlak'},
+      {speaker:'B',ar:'بالطبع. هل تريد شيئاً آخر؟',fr:'Bien sûr. Voulez-vous autre chose ?',trans:'biṭ-ṭabʿ. hal turîdu shayʾan âkhar?'},
+      {speaker:'A',ar:'نعم، قهوة من فضلك',fr:'Oui, un café s\'il vous plaît',trans:'naʿam, qahwatan min faḍlak'},
+      {speaker:'B',ar:'حسناً. المجموع ثلاثة دراهم',fr:'D\'accord. Le total est 3 dirhams',trans:'ḥasanan. al-majmûʿ thalâthat darâhim'},
+    ]
+  },
+  {
+    title:'Se présenter',
+    level:1,
+    turns:[
+      {speaker:'A',ar:'مرحباً، اسمي ليلى',fr:'Bonjour, je m\'appelle Layla',trans:'marḥaban, ismî laylâ'},
+      {speaker:'B',ar:'أهلاً ليلى، اسمي أحمد',fr:'Bonjour Layla, je m\'appelle Ahmed',trans:'ahlan laylâ, ismî aḥmad'},
+      {speaker:'A',ar:'من أين أنت يا أحمد؟',fr:'D\'où es-tu Ahmed ?',trans:'min ayna anta yâ aḥmad?'},
+      {speaker:'B',ar:'أنا من المغرب، وأنتِ؟',fr:'Je suis du Maroc, et toi ?',trans:'anâ min al-maghrib, wa anti?'},
+      {speaker:'A',ar:'أنا من فرنسا',fr:'Je suis de France',trans:'anâ min faransâ'},
+    ]
+  },
+  {
+    title:'Demander la direction',
+    level:2,
+    turns:[
+      {speaker:'A',ar:'عفواً، أين المحطة؟',fr:'Excusez-moi, où est la gare ?',trans:'ʿafwan, ayna l-maḥaṭṭa?'},
+      {speaker:'B',ar:'اذهب يميناً ثم يساراً',fr:'Allez à droite puis à gauche',trans:'idhhab yamînan thumma yasâran'},
+      {speaker:'A',ar:'هل هي بعيدة؟',fr:'Est-elle loin ?',trans:'hal hiya baʿîda?'},
+      {speaker:'B',ar:'لا، قريبة جداً. عشر دقائق',fr:'Non, très proche. Dix minutes',trans:'lâ, qarîba jiddan. ʿashr daqâʾiq'},
+      {speaker:'A',ar:'شكراً جزيلاً',fr:'Merci beaucoup',trans:'shukran jazîlan'},
+    ]
+  }
+];
+
+/* ============================================================
+   STATE & STORAGE
+   ============================================================ */
+const STORAGE_KEY='arabiq_v1';
+let state={
+  level:0,          // placement level 0-3
+  testDone:false,
+  xp:{total:0,vocab:0,lecture:0,gramm:0,comp:0,prod:0},
+  streak:{current:0,lastDate:'',max:0},
+  sessions:{}, // date -> minutes
+  badges:[],
+  settings:{showTrans:true,arabicOnly:false,difficulty:1,dailyGoal:15},
+  cards:{},  // key -> SRS card
+  learnIndex:0,
+  questProgress:0,
+  questDate:''
+};
+
+function save(){localStorage.setItem(STORAGE_KEY,JSON.stringify(state))}
+function load(){
+  const d=localStorage.getItem(STORAGE_KEY);
+  if(d)try{state=Object.assign(state,JSON.parse(d))}catch(e){}
+}
+load();
+
+/* SRS helpers */
+function getCard(key){
+  return state.cards[key]||{difficulty:2.5,lastSeen:0,nextReview:0,successRate:100,reviewCount:0,mistakes:0};
+}
+function updateCard(key,quality){
+  let c=getCard(key);c.reviewCount++;c.lastSeen=Date.now();
+  if(quality>=3){c.successRate=Math.round((c.successRate*(c.reviewCount-1)+100)/c.reviewCount)}
+  else{c.mistakes++;c.successRate=Math.round((c.successRate*(c.reviewCount-1))/c.reviewCount)}
+  // SM-2 simplified
+  const q=quality;
+  c.difficulty=Math.max(1.3,c.difficulty+(0.1-( 5-q)*(0.08+(5-q)*0.02)));
+  let interval=1;
+  if(c.reviewCount===1) interval=1;
+  else if(c.reviewCount===2) interval=6;
+  else interval=Math.round((c.reviewCount-1)*c.difficulty);
+  if(quality<3) interval=1;
+  c.nextReview=Date.now()+interval*86400000;
+  state.cards[key]=c;save();
+}
+function dueCards(){
+  const now=Date.now();
+  return VOCAB.filter(v=>{const c=getCard(v.ar);return c.nextReview<=now;}).slice(0,20);
+}
+
+/* XP */
+function addXP(cat,pts){
+  state.xp.total+=pts;
+  if(state.xp[cat]!==undefined)state.xp[cat]+=pts;
+  checkStreak();checkBadges();save();
+  showXpPop(pts);
+}
+function showXpPop(pts){
+  const d=document.createElement('div');
+  d.className='toast-item toast-success';
+  d.textContent='+'+pts+' XP';
+  document.getElementById('toast').appendChild(d);
+  setTimeout(()=>d.remove(),1800);
+}
+
+/* Streak */
+function checkStreak(){
+  const today=new Date().toDateString();
+  if(state.streak.lastDate===today) return;
+  const yesterday=new Date(Date.now()-86400000).toDateString();
+  if(state.streak.lastDate===yesterday){state.streak.current++;}
+  else if(state.streak.lastDate!==today){state.streak.current=1;}
+  state.streak.lastDate=today;
+  if(state.streak.current>state.streak.max)state.streak.max=state.streak.current;
+  save();
+}
+
+/* Badges */
+const BADGE_DEFS=[
+  {id:'first_word',label:'Premier mot',cat:'vocab',check:s=>s.xp.vocab>=5},
+  {id:'vocab10',label:'10 mots',cat:'vocab',check:s=>s.xp.vocab>=50},
+  {id:'vocab50',label:'50 mots',cat:'vocab',check:s=>s.xp.vocab>=250},
+  {id:'streak3',label:'3 jours',cat:'streak',check:s=>s.streak.current>=3},
+  {id:'streak7',label:'7 jours',cat:'streak',check:s=>s.streak.current>=7},
+  {id:'gram_start',label:'Grammaire',cat:'gram',check:s=>s.xp.gramm>=10},
+  {id:'reader',label:'Lecteur',cat:'gram',check:s=>s.xp.lecture>=50},
+];
+function checkBadges(){
+  BADGE_DEFS.forEach(b=>{
+    if(!state.badges.includes(b.id)&&b.check(state)){
+      state.badges.push(b.id);
+      showToast('🏅 Badge : '+b.label,'info');
+      save();
+    }
+  });
+}
+
+/* Toasts */
+function showToast(msg,type='info'){
+  const d=document.createElement('div');
+  d.className=`toast-item toast-${type}`;d.textContent=msg;
+  document.getElementById('toast').appendChild(d);
+  setTimeout(()=>d.remove(),3000);
+}
+
+/* Session tracking */
+function logSession(){
+  const today=new Date().toISOString().split('T')[0];
+  if(!state.sessions[today])state.sessions[today]=0;
+  state.sessions[today]+=1;
+  save();
+}
+
+/* ============================================================
+   SCREEN ROUTING
+   ============================================================ */
+let currentScreen='';
+function showScreen(name){
+  document.querySelectorAll('[id^="screen-"]').forEach(e=>e.classList.add('hidden'));
+  document.getElementById('screen-'+name).classList.remove('hidden');
+  document.querySelectorAll('.nav-item').forEach(b=>b.classList.toggle('active',b.dataset.screen===name));
+  currentScreen=name;
+  if(name==='home') renderHome();
+  else if(name==='learn') renderLearn();
+  else if(name==='review') renderReview();
+  else if(name==='dashboard') renderDashboard();
+  else if(name==='settings') renderSettings();
+}
+
+/* ============================================================
+   PLACEMENT TEST
+   ============================================================ */
+let testState={section:0,score:0,total:0,sectionScores:{}};
+const TEST_SECTIONS=['alphabet','lecture','vocabulaire','phrases'];
+
+function startTest(){
+  document.getElementById('nav').classList.add('hidden');
+  showScreen('test');
+  testState={section:0,score:0,total:0,sectionScores:{}};
+  renderTestSection();
+}
+
+function renderTestSection(){
+  const el=document.getElementById('screen-test');
+  const sec=TEST_SECTIONS[testState.section];
+  let html=`<div style="padding:20px;max-width:500px;margin:0 auto" class="fade-in">
+  <div style="margin-bottom:20px">
+    <div style="display:flex;justify-content:space-between;margin-bottom:8px">
+      <span style="color:var(--text2);font-size:.85rem">Test de placement</span>
+      <span style="color:var(--accent)">${testState.section+1}/${TEST_SECTIONS.length}</span>
+    </div>
+    <div class="pbar"><div class="pbar-fill" style="width:${(testState.section/TEST_SECTIONS.length)*100}%"></div></div>
+  </div>`;
+
+  if(sec==='alphabet'){
+    const letter=ALPHABET[Math.floor(Math.random()*10)];
+    const wrong=[...ALPHABET].filter(a=>a.ar!==letter.ar).sort(()=>Math.random()-.5).slice(0,3);
+    const opts=[...wrong,letter].sort(()=>Math.random()-.5);
+    html+=`<div class="card test-wrap">
+      <h2 style="margin-bottom:4px">A. Alphabet</h2>
+      <p style="color:var(--text2);margin-bottom:20px;font-size:.9rem">Reconnais cette lettre arabe :</p>
+      <div style="text-align:center;font-size:4rem;margin:20px 0;direction:rtl">${letter.ar}</div>
+      <p style="color:var(--text2);margin-bottom:12px">Son nom est :</p>
+      <div class="letter-grid">
+        ${opts.map(o=>`<div class="quiz-opt" onclick="testAnswer(this,'${o.name}','${letter.name}')">${o.name}</div>`).join('')}
+      </div>
+    </div>`;
+  } else if(sec==='lecture'){
+    const word=VOCAB.filter(v=>v.level===1)[Math.floor(Math.random()*8)];
+    const wrong=VOCAB.filter(v=>v.fr!==word.fr&&v.level===1).sort(()=>Math.random()-.5).slice(0,3);
+    const opts=[...wrong,word].sort(()=>Math.random()-.5);
+    html+=`<div class="card test-wrap">
+      <h2 style="margin-bottom:4px">B. Lecture</h2>
+      <p style="color:var(--text2);margin-bottom:20px;font-size:.9rem">Quel mot est écrit ici ?</p>
+      <div style="text-align:center;font-size:3rem;margin:20px 0;direction:rtl;color:var(--accent4)">${word.ar}</div>
+      <div class="quiz-options">
+        ${opts.map(o=>`<div class="quiz-opt" onclick="testAnswer(this,'${o.fr}','${word.fr}')">${o.fr}</div>`).join('')}
+      </div>
+    </div>`;
+  } else if(sec==='vocabulaire'){
+    const word=PHRASES[Math.floor(Math.random()*5)];
+    html+=`<div class="card test-wrap">
+      <h2 style="margin-bottom:4px">C. Vocabulaire</h2>
+      <p style="color:var(--text2);margin-bottom:16px;font-size:.9rem">Traduis cette phrase :</p>
+      <div style="text-align:center;font-size:1.8rem;margin:20px 0;direction:rtl;color:var(--accent4);line-height:1.6">${word.ar}</div>
+      <input type="text" id="test-input" placeholder="Ta réponse en français..." onkeydown="if(event.key==='Enter')testInputAnswer('${encodeURIComponent(word.fr)}')"/>
+      <div style="margin-top:12px;display:flex;gap:8px">
+        <button class="btn btn-primary" style="flex:1" onclick="testInputAnswer('${encodeURIComponent(word.fr)}')">Valider</button>
+        <button class="btn btn-ghost btn-sm" onclick="testSkip()">Passer</button>
+      </div>
+    </div>`;
+  } else if(sec==='phrases'){
+    const p=PHRASES[5+Math.floor(Math.random()*5)];
+    const wrong=PHRASES.filter(x=>x.fr!==p.fr).sort(()=>Math.random()-.5).slice(0,3);
+    const opts=[...wrong,p].sort(()=>Math.random()-.5);
+    html+=`<div class="card test-wrap">
+      <h2 style="margin-bottom:4px">D. Phrases</h2>
+      <p style="color:var(--text2);margin-bottom:16px;font-size:.9rem">Quelle est la signification ?</p>
+      <div style="text-align:center;font-size:1.5rem;margin:20px 0;direction:rtl;color:var(--accent4);line-height:1.6">${p.ar}</div>
+      <div style="display:flex;flex-direction:column;gap:8px">
+        ${opts.map(o=>`<div class="quiz-opt" onclick="testAnswer(this,'${encodeURIComponent(o.fr)}','${encodeURIComponent(p.fr)}')">${o.fr}</div>`).join('')}
+      </div>
+    </div>`;
+  }
+  html+='</div>';
+  el.innerHTML=html;
+}
+
+function testAnswer(el,chosen,correct){
+  document.querySelectorAll('.quiz-opt').forEach(b=>b.classList.add('disabled'));
+  const ok=chosen===correct||decodeURIComponent(chosen)===decodeURIComponent(correct);
+  el.classList.add(ok?'correct':'wrong');
+  if(!ok){
+    document.querySelectorAll('.quiz-opt').forEach(b=>{
+      if(decodeURIComponent(b.getAttribute('onclick').match(/'([^']+)'\)$/)?.[1]??'')===decodeURIComponent(correct))b.classList.add('correct');
+    });
+  }
+  if(ok) testState.score++;testState.total++;
+  setTimeout(nextTestSection,900);
+}
+
+function testInputAnswer(correctEnc){
+  const input=document.getElementById('test-input');
+  const correct=decodeURIComponent(correctEnc).toLowerCase().trim();
+  const given=(input?.value||'').toLowerCase().trim();
+  const ok=given.length>3&&(correct.includes(given)||given.includes(given.split(' ')[0]));
+  if(ok){testState.score++;showToast('✓ Correct !','success')}
+  else showToast('Réponse : '+decodeURIComponent(correctEnc),'error');
+  testState.total++;
+  setTimeout(nextTestSection,1000);
+}
+function testSkip(){testState.total++;nextTestSection();}
+
+function nextTestSection(){
+  testState.section++;
+  if(testState.section>=TEST_SECTIONS.length){finishTest();return;}
+  renderTestSection();
+}
+
+function finishTest(){
+  const pct=testState.total>0?testState.score/testState.total:0;
+  let lv=0;
+  if(pct>=0.8)lv=3;
+  else if(pct>=0.6)lv=2;
+  else if(pct>=0.3)lv=1;
+  state.level=lv;state.testDone=true;save();
+  const el=document.getElementById('screen-test');
+  const labels=['Débutant total','Bases faibles','Bases acquises','Élémentaire'];
+  el.innerHTML=`<div style="padding:40px 20px;max-width:400px;margin:0 auto;text-align:center" class="fade-in">
+    <div style="font-size:4rem;margin-bottom:16px">🎯</div>
+    <h1 style="margin-bottom:8px">Test terminé !</h1>
+    <p style="color:var(--text2);margin-bottom:24px">Score : ${testState.score}/${testState.total}</p>
+    <div class="card" style="margin-bottom:24px">
+      <div style="font-size:2rem;margin-bottom:8px">Niveau ${lv}</div>
+      <div style="font-size:1.2rem;color:var(--accent);font-weight:700">${labels[lv]}</div>
+      <p style="color:var(--text2);margin-top:8px;font-size:.9rem">Le contenu sera adapté à ton niveau automatiquement.</p>
+    </div>
+    <button class="btn btn-primary" style="width:100%" onclick="launchApp()">Commencer à apprendre →</button>
+  </div>`;
+}
+
+function launchApp(){
+  document.getElementById('nav').classList.remove('hidden');
+  showScreen('home');
+}
+
+/* ============================================================
+   HOME
+   ============================================================ */
+function renderHome(){
+  checkStreak();
+  const today=new Date().toDateString();
+  const questDone=state.questDate===today;
+  const due=dueCards().length;
+  const lvlNames=['Débutant','Élémentaire','Intermédiaire','Avancé'];
+  const xpToNext=500;
+  const el=document.getElementById('home-content');
+  el.innerHTML=`<div class="fade-in">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px">
+      <div>
+        <h1 style="font-size:1.4rem;font-weight:800">مرحباً 👋</h1>
+        <p style="color:var(--text2);font-size:.85rem">Niveau ${state.level} – ${lvlNames[state.level]}</p>
+      </div>
+      <div style="text-align:right">
+        <div style="font-size:1.2rem;font-weight:700;color:var(--accent4)">${state.xp.total} XP</div>
+      </div>
+    </div>
+
+    <div class="streak-card">
+      <div class="streak-icon">🔥</div>
+      <div>
+        <div style="font-size:1.4rem;font-weight:700">${state.streak.current} jour${state.streak.current>1?'s':''}</div>
+        <div style="color:var(--text2);font-size:.85rem">Série en cours · Record : ${state.streak.max}j</div>
+      </div>
+      <div style="margin-left:auto;text-align:right">
+        <div style="font-size:.8rem;color:var(--text2)">Objectif</div>
+        <div style="font-size:1rem;font-weight:600">${state.settings.dailyGoal} min/j</div>
+      </div>
+    </div>
+
+    <div class="quest-card">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
+        <span style="font-size:1.4rem">🌟</span>
+        <div>
+          <div style="font-weight:700">Quête du jour</div>
+          <div style="font-size:.8rem;color:var(--text2)">${questDone?'Terminée !':'15 min de pratique · +50 XP'}</div>
+        </div>
+        ${questDone?'<span style="margin-left:auto;color:var(--green);font-size:1.4rem">✓</span>':''}
+      </div>
+      <div class="pbar"><div class="pbar-fill" style="background:linear-gradient(90deg,var(--blue),var(--accent3));width:${questDone?100:Math.min(100,(state.questProgress||0)*10)}%"></div></div>
+    </div>
+
+    <div class="section-title">Progression par compétence</div>
+    <div class="card xp-bars">
+      ${[['vocab','Vocabulaire','var(--accent)'],['lecture','Lecture','var(--blue)'],['gramm','Grammaire','var(--accent3)'],['comp','Compréhension','var(--orange)'],['prod','Production','var(--accent2)']].map(([k,l,c])=>`
+        <div class="xp-row">
+          <span class="xp-label">${l}</span>
+          <div class="pbar" style="flex:1"><div class="pbar-fill" style="background:${c};width:${Math.min(100,state.xp[k]/5)}%"></div></div>
+          <span style="font-size:.8rem;color:var(--text2);width:40px;text-align:right">${state.xp[k]}</span>
+        </div>`).join('')}
+    </div>
+
+    ${due>0?`<div class="card2" style="margin-top:16px;display:flex;align-items:center;gap:12px">
+      <span style="font-size:1.6rem">⏰</span>
+      <div style="flex:1">
+        <div style="font-weight:600">${due} carte${due>1?'s':''} à réviser</div>
+        <div style="font-size:.8rem;color:var(--text2)">Ne laisse pas s'accumuler !</div>
+      </div>
+      <button class="btn btn-primary btn-sm" onclick="showScreen('review')">Réviser</button>
+    </div>`:''}
+
+    <div class="section-title">Continuer</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+      ${[
+        {icon:'📚',title:'Flashcards',sub:'Vocabulaire',screen:'learn',mode:'flashcard'},
+        {icon:'❓',title:'Quiz rapide',sub:'QCM adaptatif',screen:'learn',mode:'quiz'},
+        {icon:'💬',title:'Dialogue',sub:'Mini conversation',screen:'learn',mode:'dialogue'},
+        {icon:'📝',title:'Exercice',sub:'Construire une phrase',screen:'learn',mode:'phrase'}
+      ].map(m=>`<button class="card2" style="text-align:left;border:none;cursor:pointer;transition:all .2s" onclick="startMode('${m.mode}')" onmouseover="this.style.borderColor='var(--accent)'" onmouseout="this.style.borderColor='var(--border)'">
+        <div style="font-size:1.6rem;margin-bottom:6px">${m.icon}</div>
+        <div style="font-weight:600">${m.title}</div>
+        <div style="font-size:.8rem;color:var(--text2)">${m.sub}</div>
+      </button>`).join('')}
+    </div>
+
+    <div class="section-title">Badges</div>
+    <div class="badge-grid">
+      ${BADGE_DEFS.map(b=>`<div class="badge badge-${b.cat} ${state.badges.includes(b.id)?'earned':''}" title="${state.badges.includes(b.id)?'Obtenu':'Verrouillé'}">${state.badges.includes(b.id)?'🏅':'🔒'} ${b.label}</div>`).join('')}
+    </div>
+    <div style="height:16px"></div>
+  </div>`;
+}
+
+/* ============================================================
+   LEARN
+   ============================================================ */
+let learnMode='flashcard';
+function startMode(mode){
+  learnMode=mode;
+  showScreen('learn');
+}
+function renderLearn(){
+  const el=document.getElementById('learn-content');
+  el.innerHTML=`<div style="margin-bottom:16px;display:flex;gap:8px;flex-wrap:wrap">
+    ${[['flashcard','📚 Flashcards'],['quiz','❓ Quiz'],['dialogue','💬 Dialogue'],['phrase','📝 Phrases'],['alphabet','🔤 Alphabet']].map(([m,l])=>`
+      <button class="btn btn-sm ${learnMode===m?'btn-primary':'btn-ghost'}" onclick="learnMode='${m}';renderLearn()">${l}</button>`).join('')}
+  </div>
+  <div id="learn-module"></div>`;
+  const mod=document.getElementById('learn-module');
+  if(learnMode==='flashcard') renderFlashcards(mod);
+  else if(learnMode==='quiz') renderQuiz(mod);
+  else if(learnMode==='dialogue') renderDialogue(mod);
+  else if(learnMode==='phrase') renderPhrase(mod);
+  else if(learnMode==='alphabet') renderAlphabet(mod);
+}
+
+/* --- FLASHCARDS --- */
+let fcState={cards:[],idx:0,shown:false};
+function renderFlashcards(el){
+  if(!fcState.cards.length||fcState.idx>=fcState.cards.length){
+    // pick cards: mix new + due + difficult
+    const pool=VOCAB.filter(v=>v.level<=state.level+1);
+    const sorted=[...pool].sort((a,b)=>{
+      const ca=getCard(a.ar),cb=getCard(b.ar);
+      const scoreA=ca.nextReview-(ca.successRate*100);
+      const scoreB=cb.nextReview-(cb.successRate*100);
+      return scoreA-scoreB;
+    });
+    fcState.cards=sorted.slice(0,15);fcState.idx=0;fcState.shown=false;
+  }
+  const card=fcState.cards[fcState.idx];
+  if(!card){el.innerHTML=`<div class="card" style="text-align:center;padding:40px"><div style="font-size:3rem">🎉</div><p style="margin:12px 0">Session terminée !</p><button class="btn btn-primary" onclick="fcState.cards=[];renderLearn()">Nouvelle session</button></div>`;return;}
+  const sc=getCard(card.ar);
+  el.innerHTML=`<div class="fc-container fade-in">
+    <div class="fc-stats">
+      <span>Carte ${fcState.idx+1}/${fcState.cards.length}</span>
+      <span style="color:${sc.successRate>70?'var(--green)':'var(--red)'}">${sc.successRate}% réussite</span>
+      <span style="color:var(--text3)">${card.cat}</span>
+    </div>
+    <div class="fc-card" id="fc-main" onclick="fcReveal()">
+      <span class="fc-tag">${fcState.shown?'Retourner':'Cliquer'}</span>
+      ${fcState.shown?`
+        <div class="arabic arabic-xl">${card.ar}</div>
+        <div style="margin:8px 0;font-size:1.1rem;color:var(--text)">${card.fr}</div>
+        ${state.settings.showTrans?`<div style="color:var(--text2);font-size:.9rem;margin-top:4px">[${card.trans}]</div>`:''}
+        <div class="fc-meta">${card.cat} · niveau ${card.level}</div>
+      `:`
+        <div style="color:var(--text2);font-size:.9rem;margin-bottom:8px">Traduis ce mot :</div>
+        <div class="arabic arabic-xl" style="margin:8px 0">${card.ar}</div>
+        <div style="color:var(--text3);font-size:.85rem;margin-top:8px">Appuie pour voir</div>
+      `}
+    </div>
+    ${fcState.shown?`
+    <div class="fc-btns">
+      <button class="diff-btn diff-easy" onclick="fcRate(4)">😊 Facile</button>
+      <button class="diff-btn diff-medium" onclick="fcRate(2)">🤔 Difficile</button>
+      <button class="diff-btn diff-hard" onclick="fcRate(0)">😰 Oublié</button>
+    </div>`:`
+    <div class="fc-answer">
+      <input type="text" placeholder="Tape ta réponse (optionnel)…" id="fc-input" onkeydown="if(event.key==='Enter')fcReveal()"/>
+    </div>`}
+    <div style="display:flex;gap:8px;margin-top:4px">
+      <button class="btn btn-ghost btn-sm" onclick="fcState.idx++;fcState.shown=false;renderLearn()">Passer →</button>
+    </div>
+  </div>`;
+}
+
+function fcReveal(){
+  fcState.shown=true;
+  logSession();
+  renderLearn();
+}
+function fcRate(q){
+  updateCard(fcState.cards[fcState.idx].ar,q);
+  const xpMap={4:5,2:3,0:2};
+  addXP('vocab',xpMap[q]||2);
+  questTick();
+  fcState.idx++;fcState.shown=false;
+  renderLearn();
+}
+
+/* --- QUIZ --- */
+let quizState={q:null,answered:false,correct:0,total:0};
+function renderQuiz(el){
+  // pick random vocab at user level
+  const pool=VOCAB.filter(v=>v.level<=state.level+1);
+  const q=pool[Math.floor(Math.random()*pool.length)];
+  const wrong=pool.filter(v=>v.ar!==q.ar).sort(()=>Math.random()-.5).slice(0,3);
+  const opts=[...wrong,q].sort(()=>Math.random()-.5);
+  quizState={q,answered:false,correct:quizState.correct,total:quizState.total};
+  // decide direction (ar->fr or fr->ar)
+  const dir=Math.random()>0.5;
+  el.innerHTML=`<div class="fade-in">
+    <div style="display:flex;justify-content:space-between;margin-bottom:16px;font-size:.85rem;color:var(--text2)">
+      <span>Score : ${quizState.correct}/${quizState.total}</span>
+      <span>Niveau ${state.level+1}</span>
+    </div>
+    <div class="card" style="margin-bottom:12px">
+      <div style="color:var(--text2);font-size:.85rem;margin-bottom:10px">${dir?'Que signifie ce mot ?':'Quel est le mot arabe ?'}</div>
+      <div class="quiz-q ${dir?'arabic arabic-lg':''}" style="${dir?'direction:rtl':''}">
+        ${dir?q.ar:q.fr}
+      </div>
+      ${state.settings.showTrans&&dir?`<div style="color:var(--text3);font-size:.85rem;margin-top:4px">[${q.trans}]</div>`:''}
+    </div>
+    <div class="quiz-options">
+      ${opts.map(o=>`<div class="quiz-opt ${dir?'':'arabic'}" style="${dir?'':'direction:rtl'}" onclick="quizAnswer(this,'${dir?encodeURIComponent(o.fr):encodeURIComponent(o.ar)}','${dir?encodeURIComponent(q.fr):encodeURIComponent(q.ar)}')">${dir?o.fr:o.ar}</div>`).join('')}
+    </div>
+    <div id="quiz-feedback"></div>
+  </div>`;
+}
+
+function quizAnswer(el,chosen,correct){
+  if(quizState.answered)return;quizState.answered=true;
+  document.querySelectorAll('.quiz-opt').forEach(b=>b.classList.add('disabled'));
+  const ch=decodeURIComponent(chosen),co=decodeURIComponent(correct);
+  const ok=ch===co;
+  el.classList.add(ok?'correct':'wrong');
+  document.querySelectorAll('.quiz-opt').forEach(b=>{
+    if(decodeURIComponent(b.getAttribute('onclick').match(/'([^']*)','[^']*'\)/)?.[1]||'')===co)b.classList.add('correct');
+  });
+  quizState.total++;if(ok)quizState.correct++;
+  const fb=document.getElementById('quiz-feedback');
+  const q=quizState.q;
+  if(ok){
+    addXP('vocab',5);questTick();
+    updateCard(q.ar,4);
+    fb.innerHTML=`<div class="feedback-box feedback-correct">✅ <strong>Correct !</strong><br>${q.ar} → ${q.fr}<br><small style="color:var(--text2)">[${q.trans}]</small></div>`;
+  } else {
+    addXP('vocab',1);
+    updateCard(q.ar,0);
+    fb.innerHTML=`<div class="feedback-box feedback-wrong">❌ <strong>Incorrect.</strong><br>La bonne réponse : <strong>${q.ar} → ${q.fr}</strong><br><small style="color:var(--text2)">[${q.trans}]</small></div>`;
+  }
+  fb.innerHTML+=`<div style="margin-top:12px"><button class="btn btn-primary btn-sm" onclick="renderLearn()">Question suivante →</button></div>`;
+}
+
+/* --- DIALOGUE --- */
+let diagState={idx:0,d:null};
+function renderDialogue(el){
+  if(!diagState.d)diagState.d=DIALOGUES[Math.floor(Math.random()*DIALOGUES.length)];
+  const d=diagState.d;
+  el.innerHTML=`<div class="fade-in dialogue-wrap">
+    <div class="card" style="margin-bottom:16px">
+      <div style="font-weight:700">${d.title} · Niveau ${d.level}</div>
+      <div style="font-size:.8rem;color:var(--text2);margin-top:4px">${d.turns.length} répliques</div>
+    </div>
+    <div style="margin-bottom:16px">
+      ${d.turns.map((t,i)=>{
+        const visible=i<=diagState.idx;
+        return visible?`<div class="dialogue-msg msg-${t.speaker.toLowerCase()}">
+          <span class="msg-arabic">${t.ar}</span>
+          ${state.settings.showTrans?`<span class="msg-trans">${t.fr} · [${t.trans}]</span>`:`<span class="msg-trans">${t.fr}</span>`}
+        </div>`:'';
+      }).join('')}
+    </div>
+    ${diagState.idx<d.turns.length-1?
+      `<button class="btn btn-primary" onclick="diagNext()">Réplique suivante →</button>`:
+      `<div style="text-align:center;padding:16px">
+        <div style="font-size:1.5rem;margin-bottom:8px">🎉</div>
+        <p style="margin-bottom:12px">Dialogue terminé !</p>
+        <button class="btn btn-primary" onclick="diagState={idx:0,d:null};renderLearn()">Nouveau dialogue</button>
+      </div>`
+    }
+  </div>`;
+}
+function diagNext(){
+  diagState.idx++;
+  addXP('comp',3);questTick();
+  logSession();
+  renderLearn();
+}
+
+/* --- PHRASE BUILDER --- */
+let phraseState={current:null,words:[],userOrder:[],done:false};
+function renderPhrase(el){
+  if(!phraseState.current||phraseState.done){
+    const pool=PHRASES.filter(p=>p.level<=state.level+1);
+    phraseState.current=pool[Math.floor(Math.random()*pool.length)];
+    // split arabic words and shuffle
+    const ws=phraseState.current.ar.split(' ');
+    phraseState.words=[...ws].sort(()=>Math.random()-.5);
+    phraseState.userOrder=[];phraseState.done=false;
+  }
+  const p=phraseState.current;
+  el.innerHTML=`<div class="fade-in">
+    <div class="card" style="margin-bottom:16px">
+      <div style="color:var(--text2);font-size:.85rem;margin-bottom:8px">Reconstitue cette phrase :</div>
+      <div style="font-size:1.1rem;color:var(--text)">${p.fr}</div>
+      ${state.settings.showTrans?`<div style="color:var(--text3);font-size:.85rem">[${p.trans}]</div>`:''}
+    </div>
+    <div style="min-height:60px;padding:12px;background:var(--bg3);border-radius:var(--r2);border:1.5px dashed var(--border);margin-bottom:12px;direction:rtl;text-align:right;display:flex;flex-wrap:wrap;gap:6px;align-items:center" id="phrase-drop">
+      ${phraseState.userOrder.map((w,i)=>`<span onclick="phraseRemove(${i})" style="padding:8px 12px;background:var(--bg4);border:1px solid var(--accent);border-radius:var(--r3);cursor:pointer;font-family:Arial,serif;font-size:1.2rem">${w}</span>`).join('')}
+      ${phraseState.userOrder.length===0?`<span style="color:var(--text3);font-size:.85rem;direction:ltr">Clique sur les mots ci-dessous…</span>`:''}
+    </div>
+    <div style="display:flex;flex-wrap:wrap;gap:8px;direction:rtl;margin-bottom:16px" id="phrase-words">
+      ${phraseState.words.filter((_,i)=>!phraseState.userOrder.includes(phraseState.words.filter((_,j)=>!phraseState.userOrder.slice(0,phraseState.userOrder.indexOf(phraseState.words[i])+1).includes(phraseState.words[i]))[0])).map((w,i)=>`
+        <span onclick="phraseAdd('${w}',${i})" style="padding:8px 12px;background:var(--bg3);border:1.5px solid var(--border);border-radius:var(--r3);cursor:pointer;font-family:Arial,serif;font-size:1.2rem" onmouseover="this.style.borderColor='var(--accent)'" onmouseout="this.style.borderColor='var(--border)'">${w}</span>
+      `).join('')}
+    </div>
+    <div style="display:flex;gap:8px">
+      <button class="btn btn-primary btn-sm" onclick="phraseCheck()">Vérifier ✓</button>
+      <button class="btn btn-ghost btn-sm" onclick="phraseState={current:null};renderLearn()">Nouvelle phrase</button>
+    </div>
+    <div id="phrase-feedback"></div>
+  </div>`;
+}
+
+function phraseAdd(w,i){
+  // Remove from available
+  const pool=phraseState.current.ar.split(' ');
+  const used={};phraseState.userOrder.forEach(u=>{used[u]=(used[u]||0)+1;});
+  // check if w still available
+  const avail=(pool.filter(x=>x===w).length)-(used[w]||0);
+  if(avail<=0)return;
+  phraseState.userOrder.push(w);
+  renderLearn();
+}
+function phraseRemove(i){phraseState.userOrder.splice(i,1);renderLearn();}
+function phraseCheck(){
+  const correct=phraseState.current.ar;
+  const user=phraseState.userOrder.join(' ');
+  const fb=document.getElementById('phrase-feedback');
+  if(user===correct){
+    addXP('prod',8);questTick();
+    phraseState.done=true;
+    fb.innerHTML=`<div class="feedback-box feedback-correct" style="margin-top:12px">✅ Parfait !<br><strong class="arabic">${correct}</strong><br><small style="color:var(--text2)">${phraseState.current.fr}</small><br><button class="btn btn-primary btn-sm" style="margin-top:8px" onclick="phraseState={current:null};renderLearn()">Suivant →</button></div>`;
+  } else {
+    addXP('prod',2);
+    fb.innerHTML=`<div class="feedback-box feedback-wrong" style="margin-top:12px">❌ Pas tout à fait.<br>Correct : <strong class="arabic">${correct}</strong><br>Le tien : <span style="color:var(--orange)" class="arabic">${user}</span></div>`;
+  }
+}
+
+/* --- ALPHABET --- */
+function renderAlphabet(el){
+  const letter=ALPHABET[Math.floor(Math.random()*ALPHABET.length)];
+  const wrong=[...ALPHABET].filter(a=>a.ar!==letter.ar).sort(()=>Math.random()-.5).slice(0,3);
+  const opts=[...wrong,letter].sort(()=>Math.random()-.5);
+  el.innerHTML=`<div class="fade-in">
+    <div class="card" style="text-align:center;margin-bottom:16px">
+      <div style="font-size:.85rem;color:var(--text2);margin-bottom:16px">Quel est le nom de cette lettre ?</div>
+      <div style="font-size:5rem;direction:rtl;color:var(--accent4);margin:16px 0">${letter.ar}</div>
+      <div style="color:var(--text3);font-size:.85rem">Son : ${letter.sound}</div>
+    </div>
+    <div class="letter-grid" style="margin-bottom:16px">
+      ${opts.map(o=>`<div class="quiz-opt" onclick="alphaAnswer(this,'${o.name}','${letter.name}','${letter.trans}')">${o.name}</div>`).join('')}
+    </div>
+    <div id="alpha-feedback"></div>
+    <div style="margin-top:16px">
+      <div style="font-size:.9rem;font-weight:600;margin-bottom:8px;color:var(--text2)">Toutes les lettres :</div>
+      <div style="display:flex;flex-wrap:wrap;gap:6px">
+        ${ALPHABET.map(a=>`<div style="padding:8px 10px;background:var(--bg3);border-radius:var(--r3);text-align:center;min-width:42px" title="${a.name} [${a.trans}]">
+          <div style="font-size:1.4rem;direction:rtl">${a.ar}</div>
+          <div style="font-size:.6rem;color:var(--text3)">${a.trans}</div>
+        </div>`).join('')}
+      </div>
+    </div>
+  </div>`;
+}
+function alphaAnswer(el,chosen,correct,trans){
+  document.querySelectorAll('.quiz-opt').forEach(b=>b.classList.add('disabled'));
+  const ok=chosen===correct;el.classList.add(ok?'correct':'wrong');
+  if(!ok)document.querySelectorAll('.quiz-opt').forEach(b=>{if(b.textContent===correct)b.classList.add('correct');});
+  const fb=document.getElementById('alpha-feedback');
+  if(ok){addXP('lecture',4);questTick();fb.innerHTML=`<div class="feedback-box feedback-correct">✅ Correct ! <strong>${correct}</strong> [${trans}]<br><button class="btn btn-primary btn-sm" style="margin-top:8px" onclick="renderLearn()">Suivant →</button></div>`;}
+  else{addXP('lecture',1);fb.innerHTML=`<div class="feedback-box feedback-wrong">❌ C'est <strong>${correct}</strong> [${trans}]<br><button class="btn btn-ghost btn-sm" style="margin-top:8px" onclick="renderLearn()">Réessayer</button></div>`;}
+}
+
+function questTick(){
+  state.questProgress=(state.questProgress||0)+1;
+  const today=new Date().toDateString();
+  if(state.questProgress>=10&&state.questDate!==today){
+    state.questDate=today;addXP('total',50);
+    showToast('🌟 Quête du jour accomplie ! +50 XP','info');
+  }
+  if(state.questDate!==today)state.questDate=undefined;
+  save();
+}
+
+/* ============================================================
+   REVIEW (SRS)
+   ============================================================ */
+function renderReview(){
+  const el=document.getElementById('review-content');
+  const due=dueCards();
+  if(!due.length){
+    // show upcoming
+    const upcoming=VOCAB.sort((a,b)=>getCard(a.ar).nextReview-getCard(b.ar).nextReview).slice(0,5);
+    el.innerHTML=`<div class="fade-in">
+      <h2 style="margin-bottom:8px">Révisions ⏰</h2>
+      <div class="card" style="text-align:center;padding:32px;margin-bottom:16px">
+        <div style="font-size:3rem;margin-bottom:8px">✅</div>
+        <p style="color:var(--text2)">Aucune carte due pour l'instant !</p>
+      </div>
+      <div class="section-title">Prochaines révisions</div>
+      ${upcoming.map(v=>{
+        const c=getCard(v.ar);
+        const ms=c.nextReview-Date.now();
+        const h=Math.max(0,Math.round(ms/3600000));
+        return `<div class="card2" style="margin-bottom:8px;display:flex;align-items:center;gap:12px">
+          <div class="arabic" style="font-size:1.4rem;width:50px;text-align:center">${v.ar}</div>
+          <div style="flex:1"><div style="font-size:.9rem">${v.fr}</div><div style="font-size:.75rem;color:var(--text3)">dans ${h}h · ${c.successRate}% réussite</div></div>
+          <div style="font-size:.75rem;color:${c.successRate>70?'var(--green)':'var(--red)'}">${c.reviewCount} révisions</div>
+        </div>`;
+      }).join('')}
+      <button class="btn btn-primary" style="width:100%;margin-top:16px" onclick="showScreen('learn')">Apprendre de nouveaux mots</button>
+    </div>`;
+    return;
+  }
+  const card=due[0];
+  const sc=getCard(card.ar);
+  let reviewed=false;
+  el.innerHTML=`<div class="fade-in">
+    <div style="display:flex;justify-content:space-between;margin-bottom:12px">
+      <span style="color:var(--text2);font-size:.85rem">${due.length} carte${due.length>1?'s':''} due${due.length>1?'s':''}</span>
+      <span style="font-size:.85rem;color:var(--accent)">${sc.reviewCount} révisions</span>
+    </div>
+    <div class="pbar" style="margin-bottom:16px"><div class="pbar-fill" style="background:var(--accent3);width:${Math.min(100,((VOCAB.length-due.length)/VOCAB.length)*100)}%"></div></div>
+    <div class="fc-container">
+      <div class="fc-card" id="rev-card" onclick="revReveal()">
+        <span class="fc-tag">Révision</span>
+        <div class="arabic arabic-xl" style="color:var(--accent4)">${card.ar}</div>
+        <div style="color:var(--text3);font-size:.85rem;margin-top:8px">Clique pour voir</div>
+      </div>
+      <div id="rev-answer"></div>
+    </div>
+    <div class="card2" style="margin-top:16px">
+      <div style="font-size:.8rem;color:var(--text2);margin-bottom:6px">Statistiques de la carte</div>
+      <div style="display:flex;gap:16px;font-size:.85rem">
+        <span>Taux : <strong style="color:${sc.successRate>70?'var(--green)':'var(--red)'}">${sc.successRate}%</strong></span>
+        <span>Erreurs : <strong style="color:var(--red)">${sc.mistakes}</strong></span>
+        <span>Catégorie : ${card.cat}</span>
+      </div>
+    </div>
+  </div>`;
+  window._revCard=card;window._revShown=false;
+}
+
+window.revReveal=function(){
+  if(window._revShown)return;window._revShown=true;
+  const card=window._revCard;
+  document.getElementById('rev-card').innerHTML=`
+    <div class="arabic arabic-xl" style="color:var(--accent4)">${card.ar}</div>
+    <div style="font-size:1.1rem;margin:8px 0">${card.fr}</div>
+    ${state.settings.showTrans?`<div style="color:var(--text2);font-size:.9rem">[${card.trans}]</div>`:''}
+    <div style="color:var(--text3);font-size:.8rem;margin-top:6px">${card.cat}</div>`;
+  document.getElementById('rev-answer').innerHTML=`
+    <div class="fc-btns" style="width:100%;max-width:380px">
+      <button class="diff-btn diff-easy" onclick="revRate(4)">😊 Facile</button>
+      <button class="diff-btn diff-medium" onclick="revRate(2)">🤔 Dur</button>
+      <button class="diff-btn diff-hard" onclick="revRate(0)">😰 Oublié</button>
+    </div>`;
+};
+window.revRate=function(q){
+  updateCard(window._revCard.ar,q);
+  addXP('vocab',q>=3?4:2);questTick();logSession();
+  renderReview();
+};
+
+/* ============================================================
+   DASHBOARD
+   ============================================================ */
+function renderDashboard(){
+  const el=document.getElementById('dashboard-content');
+  const totalCards=VOCAB.length;
+  const seen=Object.keys(state.cards).length;
+  const mastered=Object.values(state.cards).filter(c=>c.successRate>=80&&c.reviewCount>=3).length;
+  // heatmap
+  const days=[];const now=Date.now();
+  for(let i=181;i>=0;i--){
+    const d=new Date(now-i*86400000).toISOString().split('T')[0];
+    const v=state.sessions[d]||0;
+    days.push({d,v});
+  }
+  el.innerHTML=`<div class="fade-in">
+    <h2 style="margin-bottom:20px">Tableau de bord 📊</h2>
+    <div class="stats-grid">
+      <div class="stat-card"><div class="stat-val" style="color:var(--accent)">${state.xp.total}</div><div class="stat-lbl">XP Total</div></div>
+      <div class="stat-card"><div class="stat-val" style="color:var(--orange)">${state.streak.current}</div><div class="stat-lbl">Jours de suite</div></div>
+      <div class="stat-card"><div class="stat-val" style="color:var(--green)">${seen}</div><div class="stat-lbl">Mots vus</div></div>
+      <div class="stat-card"><div class="stat-val" style="color:var(--accent2)">${mastered}</div><div class="stat-lbl">Maîtrisés</div></div>
+    </div>
+    <div class="card" style="margin-bottom:16px">
+      <div style="font-size:.9rem;font-weight:600;margin-bottom:12px;color:var(--text2)">Activité (6 derniers mois)</div>
+      <div class="heatmap">
+        ${days.map(({v})=>`<div class="hm-cell hm-${Math.min(4,v)}" title="${v} actions"></div>`).join('')}
+      </div>
+      <div style="display:flex;gap:4px;align-items:center;margin-top:6px;font-size:.7rem;color:var(--text3)">
+        <span>Moins</span>
+        <div class="hm-cell hm-0" style="width:12px;height:12px;flex-shrink:0"></div>
+        <div class="hm-cell hm-1" style="width:12px;height:12px;flex-shrink:0"></div>
+        <div class="hm-cell hm-2" style="width:12px;height:12px;flex-shrink:0"></div>
+        <div class="hm-cell hm-3" style="width:12px;height:12px;flex-shrink:0"></div>
+        <div class="hm-cell hm-4" style="width:12px;height:12px;flex-shrink:0"></div>
+        <span>Plus</span>
+      </div>
+    </div>
+    <div class="card" style="margin-bottom:16px">
+      <div style="font-size:.9rem;font-weight:600;margin-bottom:12px;color:var(--text2)">Progression vocabulaire</div>
+      <div style="margin-bottom:8px;display:flex;justify-content:space-between;font-size:.85rem">
+        <span>${seen} / ${totalCards} mots vus</span>
+        <span style="color:var(--accent)">${Math.round(seen/totalCards*100)}%</span>
+      </div>
+      <div class="pbar"><div class="pbar-fill" style="width:${seen/totalCards*100}%"></div></div>
+      <div style="margin-top:12px;margin-bottom:8px;display:flex;justify-content:space-between;font-size:.85rem">
+        <span>${mastered} mots maîtrisés</span>
+        <span style="color:var(--green)">${Math.round(mastered/totalCards*100)}%</span>
+      </div>
+      <div class="pbar"><div class="pbar-fill" style="background:linear-gradient(90deg,var(--green),var(--accent3));width:${mastered/totalCards*100}%"></div></div>
+    </div>
+    <div class="section-title">XP par compétence</div>
+    <div class="card xp-bars">
+      ${[['vocab','Vocabulaire','var(--accent)'],['lecture','Lecture','var(--blue)'],['gramm','Grammaire','var(--accent3)'],['comp','Compréhension','var(--orange)'],['prod','Production','var(--accent2)']].map(([k,l,c])=>`
+        <div class="xp-row">
+          <span class="xp-label">${l}</span>
+          <div class="pbar" style="flex:1"><div class="pbar-fill" style="background:${c};width:${Math.min(100,state.xp[k]/5)}%"></div></div>
+          <span style="font-size:.85rem;color:var(--text2);width:40px;text-align:right">${state.xp[k]}</span>
+        </div>`).join('')}
+    </div>
+    <div class="section-title">Mots difficiles</div>
+    ${Object.entries(state.cards).filter(([,c])=>c.successRate<50&&c.reviewCount>2).slice(0,6).map(([key,c])=>{
+      const word=VOCAB.find(v=>v.ar===key);
+      if(!word)return '';
+      return `<div class="card2" style="margin-bottom:8px;display:flex;align-items:center;gap:12px">
+        <div class="arabic" style="font-size:1.4rem;width:50px;text-align:center">${word.ar}</div>
+        <div style="flex:1"><div style="font-size:.9rem">${word.fr}</div></div>
+        <div style="font-size:.85rem;color:var(--red)">${c.successRate}%</div>
+      </div>`;
+    }).join('')||`<div class="card2" style="color:var(--text2);text-align:center;padding:20px">Aucun mot difficile pour l'instant 🎉</div>`}
+    <div style="height:16px"></div>
+  </div>`;
+}
+
+/* ============================================================
+   SETTINGS
+   ============================================================ */
+function renderSettings(){
+  const s=state.settings;
+  const el=document.getElementById('settings-content');
+  el.innerHTML=`<div class="fade-in">
+    <h2 style="margin-bottom:20px">Réglages ⚙️</h2>
+    <div class="card">
+      <div class="setting-row">
+        <div><div style="font-weight:600">Translittération</div><div style="font-size:.8rem;color:var(--text2)">Afficher la prononciation latine</div></div>
+        <label class="toggle"><input type="checkbox" ${s.showTrans?'checked':''} onchange="setSetting('showTrans',this.checked)"><span class="slider"></span></label>
+      </div>
+      <div class="setting-row">
+        <div><div style="font-weight:600">Arabe uniquement</div><div style="font-size:.8rem;color:var(--text2)">Masquer la traduction par défaut</div></div>
+        <label class="toggle"><input type="checkbox" ${s.arabicOnly?'checked':''} onchange="setSetting('arabicOnly',this.checked)"><span class="slider"></span></label>
+      </div>
+      <div class="setting-row">
+        <div><div style="font-weight:600">Difficulté</div><div style="font-size:.8rem;color:var(--text2)">1 = facile, 3 = difficile</div></div>
+        <select onchange="setSetting('difficulty',+this.value)" style="width:80px">
+          <option value="1" ${s.difficulty===1?'selected':''}>Facile</option>
+          <option value="2" ${s.difficulty===2?'selected':''}>Normal</option>
+          <option value="3" ${s.difficulty===3?'selected':''}>Difficile</option>
+        </select>
+      </div>
+      <div class="setting-row">
+        <div><div style="font-weight:600">Objectif quotidien</div><div style="font-size:.8rem;color:var(--text2)">Minutes par jour</div></div>
+        <select onchange="setSetting('dailyGoal',+this.value)" style="width:80px">
+          ${[5,10,15,20,30].map(n=>`<option value="${n}" ${s.dailyGoal===n?'selected':''}>${n} min</option>`).join('')}
+        </select>
+      </div>
+    </div>
+
+    <div class="section-title">Profil</div>
+    <div class="card">
+      <div class="setting-row">
+        <div><div style="font-weight:600">Niveau actuel</div></div>
+        <span style="color:var(--accent)">Niveau ${state.level}</span>
+      </div>
+      <div class="setting-row">
+        <div><div style="font-weight:600">Refaire le test</div><div style="font-size:.8rem;color:var(--text2)">Redétecter ton niveau</div></div>
+        <button class="btn btn-ghost btn-sm" onclick="confirmRetakeTest()">Refaire</button>
+      </div>
+    </div>
+
+    <div class="section-title">Données</div>
+    <div class="card">
+      <div class="setting-row">
+        <div><div style="font-weight:600">Réinitialiser</div><div style="font-size:.8rem;color:var(--red)">Efface toute progression</div></div>
+        <button class="btn btn-danger btn-sm" onclick="confirmReset()">Reset</button>
+      </div>
+    </div>
+    <div style="margin-top:24px;text-align:center;color:var(--text3);font-size:.8rem">
+      عربي v1.0 · Basé sur SM-2 & principes cognitifs
+    </div>
+  </div>`;
+}
+
+function setSetting(k,v){state.settings[k]=v;save();renderSettings();}
+function confirmReset(){
+  if(confirm('Effacer toute ta progression ? Cette action est irréversible.')){
+    localStorage.removeItem(STORAGE_KEY);
+    location.reload();
+  }
+}
+function confirmRetakeTest(){
+  if(confirm('Refaire le test de placement ?')){
+    state.testDone=false;save();
+    document.getElementById('nav').classList.add('hidden');
+    showScreen('test');
+    startTest();
+  }
+}
+
+/* ============================================================
+   INIT
+   ============================================================ */
+window.addEventListener('DOMContentLoaded',()=>{
+  if(!state.testDone){
+    startTest();
+  } else {
+    document.getElementById('nav').classList.remove('hidden');
+    showScreen('home');
+  }
+});
+</script>
+</body>
+</html>
