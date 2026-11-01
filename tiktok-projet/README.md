@@ -9,7 +9,7 @@ Série d'explication en 4 épisodes, tirée du PowerPoint « Toits verts contre 
 | 1 | Pourquoi il fait si chaud ? | ✅ Terminé (85 s) | `videos/episode1.mp4` |
 | 2 | Qui est responsable ? | ✅ Terminé (97 s) | `videos/episode2.mp4` |
 | 3 | Et nous, dans tout ça ? | ✅ Terminé, version « calme » (94 s) | `videos/episode3.mp4` |
-| 4 | Comment on fait ? (les solutions) | ⏳ À faire, test Remotion fait | `remotion-test/` |
+| 4 | Comment on fait ? (les solutions) | 🟡 Texte + animation faits (Remotion), **voix à générer** | `episode4/`, aperçu muet `videos/episode4-apercu-muet.mp4` |
 
 ## Ce que l'utilisatrice préfère (décisions prises)
 
@@ -46,6 +46,16 @@ Testé et fonctionnel (v4.0.539). Dans `remotion-test/` : `npm install`, copier 
 ```
 npx remotion render src/index.ts Demo out/demo.mp4 --browser-executable=/opt/pw-browsers/chromium_headless_shell-1243/chrome-headless-shell-linux64/chrome-headless-shell
 ```
+
+## Épisode 4 (Remotion) : où on en est
+
+- Texte de la voix : `texte-voix-episode4.md` (11 paragraphes = 11 scènes, ≈ 262 mots, sources et points à vérifier en bas).
+- Projet : `episode4/` (`npm install`, polices déjà dans `public/`). Scènes dans `src/scenes.tsx`, temps dans `src/timing.ts`.
+- Les temps actuels sont **estimés** (aperçu muet de 97 s). Les animations sont placées en fraction de scène, donc il suffit de remplacer `PT`/`END` par les vrais temps de la voix.
+- Avec la voix : mettre `voix-episode4.mp3` (ou le mix) dans `episode4/public/`, puis
+  `npm run render -- --props='{"voice":"voix-episode4.mp3","mix":null}'`
+  (ou `{"voice":null,"mix":"mix-episode4.wav"}` après le mixage décrit plus haut).
+- 1er novembre 2026 : la clé `ELEVENLABS_API_KEY` est bien présente, mais `api.elevenlabs.io` est **bloqué par la politique réseau** de l'environnement (403 du proxy). À ajouter dans les domaines autorisés de l'environnement.
 
 ## Prochaines étapes prévues
 
