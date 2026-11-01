@@ -12,7 +12,8 @@ NP = [0.0, 6.03, 8.34, 13.12, 22.12, 30.39, 36.52, 44.25, 55.06, 63.01]
 CUT1, CUT2 = 36.2, 62.8          # coupures (dans des silences) où l'on insère les témoignages
 EST = {1: 12.0, 2: 13.5}         # durée estimée des témoignages s'ils ne sont pas encore là
 OFF, PAD = 0.3, 0.7              # décalage de départ, marge avant/après chaque témoignage
-DEFORM = 'aresample=44100,asetrate=44100*0.78,aresample=44100,atempo=1.28,highpass=f=180,lowpass=f=3400,acompressor=threshold=0.1:ratio=4,volume=2'
+CLEAN = 'aresample=44100,highpass=f=80,afftdn=nf=-25,silenceremove=stop_periods=-1:stop_duration=0.7:stop_threshold=-38dB:stop_silence=0.45,loudnorm=I=-18:TP=-2'
+DEFORM = CLEAN + ',aresample=44100,asetrate=44100*0.78,aresample=44100,atempo=1.28,highpass=f=180,lowpass=f=3400,acompressor=threshold=0.1:ratio=4,volume=2'
 
 def dur(f):
     return float(subprocess.check_output(['ffprobe', '-v', 'error', '-show_entries', 'format=duration', '-of', 'csv=p=0', f]))
