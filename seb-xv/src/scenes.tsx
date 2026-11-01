@@ -97,7 +97,7 @@ export const S2: React.FC = () => {
 // 3. Où est Seb ?
 export const S3: React.FC = () => {
   const at = useAt(); const f = useCurrentFrame();
-  const draw = useLin(0, at(0.35)); const q = useIn(at(0.25)); const here = useIn(at(0.62));
+  const draw = useLin(0, at(0.35)); const q = useIn(at(0.55)); const here = useIn(at(0.75));
   const [bx, by] = pt([[400, 1180], [690, 1120], [760, 820], [540, 980]], (f % 150) / 150);
   return (<Board>
     <Title lines={[{t: 'Où est', c: B.cream}, {t: 'Seb ?', c: B.xv}]} size={110} top={150} />
@@ -118,7 +118,7 @@ export const S3: React.FC = () => {
 // 4. Trois secondes d'avance
 export const S4: React.FC = () => {
   const at = useAt();
-  const big = useIn(at(0.12)); const go = useLin(at(0.3), at(0.5)); const ball = useLin(at(0.45), at(0.75)); const gh = useIn(at(0.5));
+  const big = useIn(at(0.35)); const go = useLin(at(0.3), at(0.5)); const ball = useLin(at(0.45), at(0.75)); const gh = useIn(at(0.5));
   const [sx, sy] = pt([[540, 980], [760, 640]], go); const [bx, by] = pt([[220, 1500], [540, 980]], ball);
   return (<Board>
     <Kicker text="LA THÉORIE" color={B.xv} top={90} />
@@ -159,7 +159,7 @@ export const S5: React.FC = () => {
 // 6. Les passes
 export const S6: React.FC = () => {
   const at = useAt();
-  const p = useLin(at(0.2), at(0.5)); const mate = useLin(at(0.62), at(0.95)); const lb = useIn(at(0.48));
+  const p = useLin(at(0.42), at(0.62)); const mate = useLin(at(0.7), at(0.95)); const lb = useIn(at(0.65));
   const [bx, by] = pt([[300, 1300], [760, 700]], p); const [mx, my] = pt([[980, 1500], [800, 760]], mate);
   return (<Board>
     <Title lines={[{t: 'Les passes', c: B.cream}]} size={100} top={170} />
@@ -183,11 +183,11 @@ const Testimony: React.FC<{text: string; n: number}> = ({text, n}) => {
     <div style={{position: 'absolute', left: 90, top: 470, fontFamily: 'Rubik', fontWeight: 500, fontSize: 34, color: B.dim}}>Coéquipier · anonyme · voix modifiée</div>
     <Svg>{Array.from({length: 33}).map((_, i) => { const h = talk ? 20 + 160 * Math.abs(Math.sin(f / 3.1 + i * 0.7) * hash(i + Math.floor(f / 3))) : 8;
       return <rect key={i} x={110 + i * 26} y={880 - h / 2} width={14} height={h} rx={7} fill={i % 5 === 0 ? B.xv : B.cream} opacity={0.85} />; })}</Svg>
-    <div style={{position: 'absolute', left: 90, width: 900, top: 1150, textAlign: 'center', fontFamily: 'Rubik', fontWeight: 700, fontSize: 54, lineHeight: 1.3, color: B.cream, opacity: s}}>« {text} »</div>
+    <div style={{position: 'absolute', left: 90, width: 900, top: 1150, textAlign: 'center', fontFamily: 'Rubik', fontWeight: 700, fontSize: 46, lineHeight: 1.3, color: B.cream, opacity: s}}>« {text} »</div>
   </AbsoluteFill>);
 };
-export const S7: React.FC = () => <Testimony n={1} text="Je l'ai jamais vu toucher le ballon. Pour moi, c'est la marque des plus grands." />;
-export const S11: React.FC = () => <Testimony n={2} text="Depuis le doublé, on attend le troisième. Il dit qu'il le garde pour un grand match." />;
+export const S7: React.FC = () => <Testimony n={1} text="Je l'ai jamais vu toucher le ballon. Jamais. Au début, je me disais qu'il était perdu… Et puis j'ai compris. Le ballon, c'est pour ceux qui ont besoin de preuves. Seb, il joue un niveau au-dessus." />;
+export const S11: React.FC = () => <Testimony n={2} text="Depuis le doublé, on attend le troisième. Il dit qu'il le garde pour un grand match. On lui a demandé lequel… Il a juste répondu : « Vous verrez. » Franchement ? Je crois que ce match-là n'existe pas encore." />;
 
 // 8. Statistiques
 export const S8: React.FC = () => {
@@ -208,9 +208,9 @@ export const S8: React.FC = () => {
 export const S9: React.FC = () => {
   const at = useAt();
   const draw = useLin(0, at(0.12));
-  const c1 = useLin(at(0.2), at(0.32)), h1 = useLin(at(0.32), at(0.38));
-  const c2 = useLin(at(0.44), at(0.56)), h2 = useLin(at(0.56), at(0.62));
-  const goals = (h1 >= 1 ? 1 : 0) + (h2 >= 1 ? 1 : 0); const g = useIn(at(0.38));
+  const c1 = useLin(at(0.28), at(0.38)), h1 = useLin(at(0.38), at(0.43));
+  const c2 = useLin(at(0.46), at(0.55)), h2 = useLin(at(0.55), at(0.6));
+  const goals = (h1 >= 1 ? 1 : 0) + (h2 >= 1 ? 1 : 0); const g = useIn(at(0.4));
   const arc = (x0: number, y0: number, x1: number, y1: number, k: number): [number, number] => [lerp(x0, x1, k), lerp(y0, y1, k) - Math.sin(k * Math.PI) * 140];
   let ball: [number, number] = [930, 900];
   if (c1 > 0 && h1 < 1) ball = h1 > 0 ? pt([[560, 640], [520, 400]], h1) : arc(930, 900, 560, 640, c1);
@@ -236,7 +236,7 @@ export const S9: React.FC = () => {
       <div style={{fontFamily: 'Rubik', fontWeight: 700, fontSize: 34, letterSpacing: 6, color: B.dim}}>BUTS DE LA TÊTE</div>
       <div style={{fontFamily: 'Oswald', fontWeight: 700, fontSize: 200, lineHeight: 1, color: B.gold}}>{goals}</div>
     </div>
-    <Line text="Pour une fois… le football avait rattrapé Seb." delay={at(0.74)} top={1680} size={42} />
+    <Line text="Pour une fois… le football avait rattrapé Seb." delay={at(0.65)} top={1680} size={42} />
   </Board>);
 };
 

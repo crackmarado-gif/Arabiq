@@ -28,7 +28,7 @@ Les « … » marquent une pause. Une ligne = une scène.
 > Ses passes ? Il ne les rate pas. Il les donne à des coéquipiers… qui ne sont pas encore démarqués.
 
 **7. Témoignage 1** — Coéquipier anonyme (voix déformée)
-> Je l'ai jamais vu toucher le ballon. Pour moi, c'est la marque des plus grands.
+> Je l'ai jamais vu toucher le ballon. Jamais. Au début, je me disais qu'il était perdu… Et puis j'ai compris. Le ballon, c'est pour ceux qui ont besoin de preuves. Seb, il joue un niveau au-dessus.
 
 **8. Les statistiques** — Narrateur
 > Les chiffres parlent d'eux-mêmes. Distance parcourue : impossible à mesurer. Ballons touchés : confidentiel.
@@ -40,7 +40,7 @@ Les « … » marquent une pause. Une ligne = une scène.
 > Seb est aussi le seul joueur de l'XV à avoir ramené son propre public au stade. Une supportrice. Cent pour cent de son kop.
 
 **11. Témoignage 2** — Coéquipier anonyme (voix déformée)
-> Depuis le doublé, on attend le troisième. Il dit qu'il le garde pour un grand match.
+> Depuis le doublé, on attend le troisième. Il dit qu'il le garde pour un grand match. On lui a demandé lequel… Il a juste répondu : « Vous verrez. » Franchement ? Je crois que ce match-là n'existe pas encore.
 
 **12. Fin** — Narrateur
 > Seb n'est pas sous-coté. Il est en avance. Le football… n'était pas prêt.
