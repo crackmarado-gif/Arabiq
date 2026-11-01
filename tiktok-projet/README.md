@@ -55,9 +55,6 @@ npx remotion render src/index.ts Demo out/demo.mp4 --browser-executable=/opt/pw-
 - Avec la voix : mettre `voix-episode4.mp3` (ou le mix) dans `episode4/public/`, puis
   `npm run render -- --props='{"voice":"voix-episode4.mp3","mix":null}'`
   (ou `{"voice":null,"mix":"mix-episode4.wav"}` après le mixage décrit plus haut).
-- Scène 6 « Imagine ça sur les cités » : avant / après avec curseur, sur deux images créées avec Canva (même vue de cité ; marquées « SIMULATION » à l'écran).
-  Canva : avant https://www.canva.com/M/MAHZtqu3bCY · après https://www.canva.com/M/MAHZtrduap0
-  ⚠️ `episode4/public/cite-avant.png` et `cite-apres.png` sont pour l'instant des miniatures agrandies (floues) : télécharger les images en pleine résolution depuis Canva et les remplacer (mêmes noms), ou autoriser `canva.com` dans le réseau de l'environnement.
 - 1er novembre 2026 : la clé `ELEVENLABS_API_KEY` est bien présente, mais `api.elevenlabs.io` est **bloqué par la politique réseau** de l'environnement (403 du proxy). À ajouter dans les domaines autorisés de l'environnement.
 
 ## Prochaines étapes prévues

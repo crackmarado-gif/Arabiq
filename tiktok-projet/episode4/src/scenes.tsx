@@ -1,5 +1,5 @@
 import React from 'react';
-import {AbsoluteFill, Easing, Img, interpolate, interpolateColors, staticFile, useCurrentFrame} from 'remotion';
+import {AbsoluteFill, Easing, interpolate, interpolateColors, useCurrentFrame} from 'remotion';
 import {C, Chip, Drift, Icon, Kicker, Para, Source, Thermo, Title, Tower, clamp, hash, useAt, useIn, useLin} from './ui';
 
 const W = 1080, H = 1920;
@@ -152,25 +152,19 @@ export const S5: React.FC = () => {
 };
 
 // 6. « Maintenant, imagine ça sur les cités. […] qui pourraient devenir verts. »
-// Avant / après sur une même vue de cité (images créées avec Canva, à afficher comme SIMULATION)
 export const S6: React.FC = () => {
   const at = useAt(); const f = useCurrentFrame();
-  const k = interpolate(f, [at(0.38), at(0.88)], [0, 1], {extrapolateLeft: 'clamp', extrapolateRight: 'clamp', easing: Easing.inOut(Easing.cubic)});
-  const zoom = interpolate(f, [0, at(1)], [1.0, 1.07]);
-  const x = W * k; const lab = useIn(at(0.2)); const lab2 = useIn(at(0.5));
-  const img: React.CSSProperties = {position: 'absolute', inset: 0, width: W, height: H, objectFit: 'cover', transform: `scale(${zoom})`, transformOrigin: '540px 1100px'};
-  return (<AbsoluteFill style={{background: C.ink}}>
-    <Img src={staticFile('cite-avant.png')} style={img} />
-    <AbsoluteFill style={{clipPath: `inset(0 ${W - x}px 0 0)`}}><Img src={staticFile('cite-apres.png')} style={img} /></AbsoluteFill>
-    {k > 0 && k < 1 && <div style={{position: 'absolute', left: x - 3, top: 0, width: 6, height: H, background: '#fff', boxShadow: '0 0 18px rgba(0,0,0,.35)'}}>
-      <div style={{position: 'absolute', left: -32, top: 1080, width: 70, height: 70, borderRadius: 35, background: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: 'Rubik', fontWeight: 800, fontSize: 30, color: C.ink}}>‹ ›</div></div>}
-    <AbsoluteFill style={{background: 'linear-gradient(180deg, rgba(243,237,226,.95) 0%, rgba(243,237,226,.85) 22%, rgba(243,237,226,0) 36%)'}} />
+  const sky = interpolateColors(f, [0, at(1)], ['#F3EDE2', '#DCEFF2']);
+  const T = [{x: 20, w: 220, h: 640}, {x: 270, w: 260, h: 880}, {x: 560, w: 220, h: 700}, {x: 810, w: 250, h: 960}];
+  return (<AbsoluteFill style={{background: sky}}>
     <Title lines={[{t: 'Imagine ça'}, {t: 'sur les cités.', c: C.greenD}]} size={110} delay={2} />
-    <div style={{position: 'absolute', left: 90, top: 1560, padding: '10px 22px', borderRadius: 14, background: 'rgba(27,30,28,.75)', color: '#fff', fontFamily: 'Rubik', fontWeight: 700, fontSize: 30, letterSpacing: 4, opacity: lab * (1 - lab2)}}>AVANT</div>
-    <div style={{position: 'absolute', right: 90, top: 1560, padding: '10px 22px', borderRadius: 14, background: C.greenD, color: '#fff', fontFamily: 'Rubik', fontWeight: 700, fontSize: 30, letterSpacing: 4, opacity: lab2}}>APRÈS ?</div>
-    <div style={{position: 'absolute', left: 0, right: 0, bottom: 0, height: 200, background: 'linear-gradient(0deg, rgba(27,30,28,.7), rgba(27,30,28,0))'}} />
-    <div style={{position: 'absolute', left: 90, top: 1760, padding: '8px 18px', borderRadius: 10, background: C.orange, color: '#fff', fontFamily: 'Rubik', fontWeight: 800, fontSize: 26, letterSpacing: 3}}>SIMULATION</div>
-    <Source text="Images illustratives créées avec l'IA (Canva) : ce n'est pas une vraie cité." color="#fff" delay={10} />
+    <Drift from={1} to={1.06} origin="540px 1500px">
+      <Svg>
+        <Ground y={1560} />
+        {T.map((t, i) => { const g = interpolate(f, [at(0.4 + i * 0.1), at(0.6 + i * 0.1)], [0, 1], {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'});
+          return <Tower key={i} {...t} base={1560} seed={10 + i} green={g} />; })}
+      </Svg>
+    </Drift>
   </AbsoluteFill>);
 };
 
