@@ -12,9 +12,34 @@ NP = [0.0, 6.03, 8.34, 13.12, 22.12, 30.39, 36.52, 44.25, 55.06, 63.01]
 CUT1, CUT2 = 36.2, 62.8          # coupures (dans des silences) où l'on insère les témoignages
 EST = {1: 12.0, 2: 13.5}         # durée estimée des témoignages s'ils ne sont pas encore là
 OFF, PAD = 0.3, 0.5              # décalage de départ, marge avant/après chaque témoignage
-TRIM = 'silenceremove=start_periods=1:start_threshold=-40dB:start_duration=0.15:start_silence=0.1'
-CLEAN = 'aresample=44100,highpass=f=80,' + TRIM + ',areverse,' + TRIM + ',areverse,afftdn=nf=-25,silenceremove=stop_periods=-1:stop_duration=0.7:stop_threshold=-38dB:stop_silence=0.45,loudnorm=I=-18:TP=-2'
+CLEAN = 'aresample=44100,highpass=f=80,afftdn=nf=-25,loudnorm=I=-18:TP=-2'
 DEFORM = CLEAN + ',aresample=44100,asetrate=44100*0.78,aresample=44100,atempo=1.28,highpass=f=180,lowpass=f=3400,acompressor=threshold=0.1:ratio=4,volume=2'
+
+def trim_pauses(src, dst, thr_db=-40.0, keep=0.45, max_pause=0.7, margin=0.12, tail=0.3):
+    """Coupe le bruit avant/après la voix et raccourcit les longues pauses (sans rien perdre de la voix)."""
+    import array, math, wave
+    sr = 44100
+    raw = subprocess.check_output(['ffmpeg', '-v', 'error', '-i', src, '-ac', '1', '-ar', str(sr), '-f', 's16le', '-'])
+    a = array.array('h', raw); F = int(sr * 0.05)
+    loud = [20 * math.log10(math.sqrt(sum(x * x for x in a[i:i + F]) / F) / 32768 + 1e-9) > thr_db for i in range(0, len(a) - F, F)]
+    on = [i for i, v in enumerate(loud) if v]
+    if not on:
+        raise SystemExit(f'pas de voix détectée dans {src}')
+    segs, st, prev = [], on[0], on[0]
+    for i in on[1:]:
+        if (i - prev - 1) * 0.05 > max_pause:
+            segs.append((st, prev)); st = i
+        prev = i
+    segs.append((st, prev))
+    out = array.array('h')
+    for j, (b, e) in enumerate(segs):
+        s0 = max(0, int((b * 0.05 - margin) * sr)); s1 = min(len(a), int(((e + 1) * 0.05 + margin) * sr))
+        out.extend(a[s0:s1])
+        if j < len(segs) - 1:
+            out.extend(array.array('h', bytes(2 * int((keep - 2 * margin) * sr))))
+    out.extend(array.array('h', bytes(2 * int(tail * sr))))
+    with wave.open(dst, 'wb') as w:
+        w.setnchannels(1); w.setsampwidth(2); w.setframerate(sr); w.writeframes(out.tobytes())
 
 def dur(f):
     return float(subprocess.check_output(['ffprobe', '-v', 'error', '-show_entries', 'format=duration', '-of', 'csv=p=0', f]))
@@ -22,10 +47,11 @@ def dur(f):
 total_narr = dur(NARR)
 tem = {}
 for n in (1, 2):
-    fs = [f for f in glob.glob(f'public/temoin{n}.*') if 'deforme' not in f]
+    fs = [f for f in glob.glob(f'public/temoin{n}.*') if 'deforme' not in f and 'coupe' not in f]
     if fs:
         out = f'public/temoin{n}-deforme.wav'
-        subprocess.run(['ffmpeg', '-v', 'error', '-y', '-i', fs[0], '-af', DEFORM + ',silenceremove=start_periods=1:start_threshold=-45dB,areverse,silenceremove=start_periods=1:start_threshold=-45dB,areverse', out], check=True)
+        tmp = f'public/temoin{n}-coupe.wav'; trim_pauses(fs[0], tmp)
+        subprocess.run(['ffmpeg', '-v', 'error', '-y', '-i', tmp, '-af', DEFORM, out], check=True)
         tem[n] = (out, dur(out))
 slot = {n: PAD * 2 + (tem[n][1] if n in tem else EST[n]) for n in (1, 2)}
 
