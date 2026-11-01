@@ -14,13 +14,13 @@ Une ligne = un paragraphe = une scène de la vidéo (laisser un petit silence en
 > On l'a dit : si le changement ne vient pas d'en haut, il doit venir d'en bas. Et pourtant, la réponse est tout en haut… sur les toits.
 
 **3. Le toit végétalisé**
-> Un toit végétalisé, c'est de la terre et des plantes à la place du bitume. Résultat : jusqu'à dix degrés de moins sur le toit.
+> Un toit végétalisé, c'est de la terre et des plantes à la place du bitume. Au soleil, un toit sombre peut monter jusqu'à quatre-vingts degrés. Un toit végétalisé, lui, reste sous les trente.
 
 **4. La biodiversité**
-> Et la nature s'y installe toute seule. En Île-de-France, des chercheurs ont étudié trente-six toits verts. Ils y ont trouvé deux cent quatre-vingt-douze espèces de plantes… dont soixante-dix pour cent sont venues seules. Et six cent onze espèces d'invertébrés.
+> Et la nature s'y installe toute seule. En Île-de-France, des chercheurs ont étudié trente-six toits verts. Ils y ont trouvé près de quatre cents espèces de plantes… beaucoup venues toutes seules, avec le vent ou les oiseaux. Et six cent onze espèces d'invertébrés.
 
 **5. La ferme sur le toit**
-> À Paris, la ferme Nature Urbaine cultive des fruits et des légumes sur quatorze mille mètres carrés… de toit.
+> À Paris, sur un toit de quatorze mille mètres carrés, la ferme Nature Urbaine cultive des fruits et des légumes.
 
 **6. Imaginez sur les cités**
 > Maintenant, imagine ça sur les cités. Des centaines de toits plats, en plein soleil… qui pourraient devenir verts.
@@ -44,13 +44,17 @@ Une ligne = un paragraphe = une scène de la vidéo (laisser un petit silence en
 
 ## Sources à afficher (en bas de l'écran) et à mettre en description
 
-- Scène 3 : ADEME ; Batiweb
-- Scène 4 : ARB Île-de-France, programme GROOVES
-- Scène 5 : Nature Urbaine, Paris
-- Scène 7 : loi Climat et Résilience (2021), art. 101
-- Scène 9 : Anguelovski et al. (2022)
+- Scène 3 : étude réalisée pour l'ADEME, « Rafraîchir les villes » (valeurs reprises de Fischetti, 2005)
+- Scène 4 : ARB Île-de-France, étude GROOVES (2017-2019) ; Institut Paris Region, Note rapide n° 890 (2021)
+- Scène 5 : Chambre d'agriculture d'Île-de-France, fiche projet Nature Urbaine (2023)
+- Scène 7 : loi Climat et Résilience (2021), art. 101 (art. L. 171-4 du Code de la construction et de l'habitation)
+- Scène 9 : Anguelovski et al., « Green gentrification in European and North American cities », Nature Communications, 2022, DOI 10.1038/s41467-022-31572-1
+- Scène 8 : fiche RENOPTIM « Toitures végétalisées » ; Agence Qualité Construction
 
-## Points à vérifier avant publication
+## Vérifications faites (1er novembre 2026)
 
-- Scène 3 : vérifier la formulation exacte de l'ADEME/Batiweb pour « -10 °C » (température de surface du toit ? de l'air sous le toit ?). Le texte dit « sur le toit », ce qui est la lecture la plus prudente.
-- Scène 9 : la référence complète d'Anguelovski et al. (2022) est à préciser pour la description.
+- « −10 °C » retiré : chiffre introuvable. Remplacé par 80 °C (toit sombre) / 29 °C (toit végétalisé), en surface au soleil.
+- 292 espèces = un seul relevé (Vigie-Flore) ; l'étude complète en compte environ 400 → « près de quatre cents ».
+- 14 000 m² = surface du toit, pas surface cultivée (≈ 5 000 m² cultivés en 2023) → « sur un toit de quatorze mille mètres carrés ».
+- Loi Climat : l'obligation vise les bâtiments non résidentiels neufs ou très rénovés, et c'est « végétaliser OU poser du solaire ».
+- Gentrification verte et « surtout au dernier étage » : confirmés.

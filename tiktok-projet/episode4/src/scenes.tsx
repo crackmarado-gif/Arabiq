@@ -60,17 +60,18 @@ export const S2: React.FC = () => {
 export const S3: React.FC = () => {
   const at = useAt(); const f = useCurrentFrame();
   const g = useLin(at(0.15), at(0.45));
-  const cool = useLin(at(0.5), at(0.8));
-  const n = Math.round(interpolate(f, [at(0.5), at(0.8)], [0, 10], {extrapolateLeft: 'clamp', extrapolateRight: 'clamp', easing: Easing.out(Easing.cubic)}));
-  const big = useIn(at(0.48));
+  const cool = useLin(at(0.62), at(0.88));
+  const n = Math.round(interpolate(f, [at(0.62), at(0.88)], [80, 29], {extrapolateLeft: 'clamp', extrapolateRight: 'clamp', easing: Easing.out(Easing.cubic)}));
+  const hot = useIn(at(0.3)), big = useIn(at(0.58));
   const waves = (x: number, o: number) => [0, 1, 2].map((i) => {
     const y = 1000 - ((f * 1.2 + i * 40) % 120);
     return <path key={i} d={`M${x + i * 70} ${y} q15 -20 0 -40 q-15 -20 0 -40`} stroke={C.orange} strokeWidth={8} fill="none" strokeLinecap="round" opacity={o * 0.8 * Math.sin(((f * 1.2 + i * 40) % 120) / 120 * Math.PI)} />;
   });
   return (<AbsoluteFill style={{background: C.cream}}>
     <Kicker text="UN TOIT VÉGÉTALISÉ" />
-    <div style={{position: 'absolute', top: 280, width: W, textAlign: 'center', fontFamily: 'Oswald', fontWeight: 700, fontSize: 250, color: C.greenD, opacity: big, transform: `translateY(${(1 - big) * 30}px)`}}>–{n} °C</div>
-    <Para top={600} delay={at(0.55)} center size={44}>jusqu'à dix degrés de moins sur le toit</Para>
+    <div style={{position: 'absolute', top: 300, left: 30, width: 500, textAlign: 'center', fontFamily: 'Oswald', fontWeight: 700, fontSize: 170, color: '#E8321E', opacity: hot, transform: `translateY(${(1 - hot) * 30}px)`}}>80 °C</div>
+    <div style={{position: 'absolute', top: 300, left: 550, width: 500, textAlign: 'center', fontFamily: 'Oswald', fontWeight: 700, fontSize: 170, color: interpolateColors(cool, [0, 1], ['#E8321E', C.greenD]), opacity: big, transform: `translateY(${(1 - big) * 30}px)`}}>{n} °C</div>
+    <Para top={530} delay={at(0.3)} center size={40}>en surface, au soleil</Para>
     <Svg>
       <Ground y={1500} />
       {/* Bitume */}
@@ -83,22 +84,21 @@ export const S3: React.FC = () => {
       <rect x={580} y={1070} width={440} height={26} rx={6} fill={interpolateColors(g, [0, 1], [C.ink, C.leaf])} />
       {Array.from({length: 13}).map((_, i) => { const k = Easing.out(Easing.cubic)(clamp(g * 1.6 - i / 13 * 0.6)); return <circle key={i} cx={596 + i * 33} cy={1070} r={(14 + hash(i + 9) * 10) * k} fill={i % 2 ? C.leaf : C.leaf2} />; })}
       {waves(690, 1 - g)}
-      <Thermo x={800} y={720} level={0.85 - 0.4 * cool} color={interpolateColors(cool, [0, 1], ['#E8321E', '#5BB8E0'])} />
+      <Thermo x={800} y={720} level={0.85 - 0.5 * cool} color={interpolateColors(cool, [0, 1], ['#E8321E', '#5BB8E0'])} />
       <text x={280} y={1580} textAnchor="middle" fontFamily="Rubik" fontWeight={700} fontSize={40} fill={C.ink}>Bitume</text>
       <text x={800} y={1580} textAnchor="middle" fontFamily="Rubik" fontWeight={700} fontSize={40} fill={C.greenD}>Toit végétalisé</text>
     </Svg>
-    <Source text="Sources : ADEME · Batiweb" />
+    <Source text="Source : étude réalisée pour l'ADEME, « Rafraîchir les villes » (d'après Fischetti, 2005)" />
   </AbsoluteFill>);
 };
 
 // 4. Biodiversité : 36 toits, 292 espèces de plantes, 70 % venues seules, 611 espèces d'invertébrés
 export const S4: React.FC = () => {
   const at = useAt(); const f = useCurrentFrame();
-  const rows: {n: number; suf: string; label: string; icon: 'roof' | 'leaf' | 'seed' | 'bug'; t: number}[] = [
-    {n: 36, suf: '', label: 'toits verts étudiés', icon: 'roof', t: 0.2},
-    {n: 292, suf: '', label: 'espèces de plantes', icon: 'leaf', t: 0.38},
-    {n: 70, suf: ' %', label: 'venues toutes seules', icon: 'seed', t: 0.56},
-    {n: 611, suf: '', label: "espèces d'invertébrés", icon: 'bug', t: 0.8},
+  const rows: {n: number; pre: string; label: string; icon: 'roof' | 'leaf' | 'seed' | 'bug'; t: number}[] = [
+    {n: 36, pre: '', label: 'toits verts étudiés', icon: 'roof', t: 0.2},
+    {n: 400, pre: '≈ ', label: 'espèces de plantes,\nbeaucoup venues toutes seules', icon: 'leaf', t: 0.42},
+    {n: 611, pre: '', label: "espèces d'invertébrés", icon: 'bug', t: 0.8},
   ];
   return (<AbsoluteFill style={{background: '#E6F1E0'}}>
     <Kicker text="LA NATURE S'INVITE" />
@@ -106,15 +106,15 @@ export const S4: React.FC = () => {
     {rows.map((r, i) => {
       const s = useIn(at(r.t));
       const v = Math.round(interpolate(f, [at(r.t), at(r.t) + 30], [0, r.n], {extrapolateLeft: 'clamp', extrapolateRight: 'clamp', easing: Easing.out(Easing.cubic)}));
-      return (<div key={i} style={{position: 'absolute', left: 90, top: 580 + i * 280, display: 'flex', alignItems: 'center', gap: 40, opacity: s, transform: `translateX(${(1 - s) * -40}px)`}}>
+      return (<div key={i} style={{position: 'absolute', left: 90, top: 600 + i * 340, display: 'flex', alignItems: 'center', gap: 40, opacity: s, transform: `translateX(${(1 - s) * -40}px)`}}>
         <Icon kind={r.icon} size={150} />
         <div>
-          <div style={{fontFamily: 'Oswald', fontWeight: 700, fontSize: 120, lineHeight: 1, color: C.greenD}}>{v}{r.suf}</div>
-          <div style={{fontFamily: 'Rubik', fontWeight: 500, fontSize: 42, color: C.ink}}>{r.label}</div>
+          <div style={{fontFamily: 'Oswald', fontWeight: 700, fontSize: 120, lineHeight: 1, color: C.greenD}}>{r.pre}{v}</div>
+          <div style={{fontFamily: 'Rubik', fontWeight: 500, fontSize: 42, lineHeight: 1.25, whiteSpace: 'pre-line', color: C.ink}}>{r.label}</div>
         </div>
       </div>);
     })}
-    <Source text="Source : ARB Île-de-France, programme GROOVES (toits végétalisés d'Île-de-France)" />
+    <Source text="Source : ARB Île-de-France, étude GROOVES 2017-2019 · Institut Paris Region, Note rapide n° 890 (2021)" />
   </AbsoluteFill>);
 };
 
@@ -127,7 +127,7 @@ export const S5: React.FC = () => {
   return (<AbsoluteFill style={{background: 'linear-gradient(180deg,#DCEFF2 0%,#F3EDE2 60%)'}}>
     <Kicker text="UNE FERME SUR LE TOIT" />
     <div style={{position: 'absolute', left: 90, top: 260, fontFamily: 'Oswald', fontWeight: 700, fontSize: 200, lineHeight: 1, color: C.greenD, opacity: big}}>{n.toLocaleString('fr-FR').replace(/ | /g, ' ')} m²</div>
-    <Para top={500} delay={at(0.3)} size={46}>de fruits et légumes… <b>sur un toit, à Paris</b>.</Para>
+    <Para top={500} delay={at(0.3)} size={46}><b>de toit, à Paris</b>… où l'on cultive des fruits et des légumes.</Para>
     <Drift from={1} to={1.05} origin="540px 1350px">
       <Svg>
         <path d="M842 1120 L888 860 L896 760 L900 700 L904 760 L912 860 L958 1120 L935 1120 Q900 1040 865 1120 Z" fill="#C9BBA6" />
@@ -138,7 +138,7 @@ export const S5: React.FC = () => {
         {rowsY.map((y, i) => {
           const k = useLin(at(0.2 + i * 0.1), at(0.35 + i * 0.1));
           const p = (y - 1140) / 420; const x0 = 90 - 70 * p + 30, x1 = 990 + 70 * p - 30;
-          const cx = (x0 + x1) / 2, half = (x1 - x0) / 2 * k;
+          const cx = (x0 + x1) / 2, half = (x1 - x0) / 2 * 0.62 * k;
           return (<g key={i}>
             <rect x={cx - half} y={y - 18 - p * 6} width={half * 2} height={30 + p * 12} rx={16} fill={i % 2 ? C.leaf : C.leaf2} />
             {Array.from({length: 12}).map((_, j) => { const dx = x0 + 30 + j * ((x1 - x0 - 60) / 11); const on = Math.abs(dx - cx) < half - 10;
@@ -147,7 +147,7 @@ export const S5: React.FC = () => {
         })}
       </Svg>
     </Drift>
-    <Source text="Source : Nature Urbaine (Paris Expo Porte de Versailles)" />
+    <Source text="Source : Chambre d'agriculture d'Île-de-France, fiche Nature Urbaine (2023)" />
   </AbsoluteFill>);
 };
 
@@ -192,13 +192,14 @@ export const S7: React.FC = () => {
       </g>
     </Svg>
     <div style={{position: 'absolute', left: 90, top: 1200, width: 900, padding: '36px 44px', boxSizing: 'border-box', borderRadius: 28, background: '#fff', boxShadow: '0 14px 30px rgba(58,36,16,.14)', opacity: card, transform: `translateY(${(1 - card) * 40}px)`}}>
-      <div style={{fontFamily: 'Oswald', fontWeight: 700, fontSize: 52, color: C.ink, marginBottom: 16}}>LOI CLIMAT · TOITS VÉGÉTALISÉS OBLIGATOIRES ?</div>
+      <div style={{fontFamily: 'Oswald', fontWeight: 700, fontSize: 52, color: C.ink, marginBottom: 6}}>LOI CLIMAT · TOIT VÉGÉTALISÉ OU SOLAIRE OBLIGATOIRE ?</div>
+      <div style={{fontFamily: 'Rubik', fontWeight: 500, fontSize: 28, color: '#7A7268', marginBottom: 12}}>Pour les bâtiments neufs ou très rénovés</div>
       {items.map(([t, ok, d]) => { const s = useIn(at(d)); return (
         <div key={t} style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '14px 0', borderTop: '2px solid #EEE6D8', fontFamily: 'Rubik', fontWeight: ok ? 500 : 800, fontSize: 44, color: ok ? C.ink : C.orange, opacity: s}}>
           <span>{t}</span><span style={{fontFamily: 'Oswald', fontSize: 56, color: ok ? C.greenD : C.orange}}>{ok ? 'OUI' : 'NON'}</span>
         </div>); })}
     </div>
-    <Source text="Source : loi Climat et Résilience (2021), art. 101" />
+    <Source text="Source : loi Climat et Résilience (2021), art. 101 (art. L. 171-4 du Code de la construction et de l'habitation)" />
   </AbsoluteFill>);
 };
 

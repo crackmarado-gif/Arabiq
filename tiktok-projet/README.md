@@ -49,7 +49,7 @@ npx remotion render src/index.ts Demo out/demo.mp4 --browser-executable=/opt/pw-
 
 ## Épisode 4 (Remotion) : où on en est
 
-- Texte de la voix : `texte-voix-episode4.md` (11 paragraphes = 11 scènes, ≈ 262 mots, sources et points à vérifier en bas).
+- Texte de la voix : `texte-voix-episode4.md` (11 paragraphes = 11 scènes, sources en bas). Faits vérifiés le 1er novembre 2026 (voir la fin du fichier).
 - Projet : `episode4/` (`npm install`, polices déjà dans `public/`). Scènes dans `src/scenes.tsx`, temps dans `src/timing.ts`.
 - Les temps actuels sont **estimés** (aperçu muet de 97 s). Les animations sont placées en fraction de scène, donc il suffit de remplacer `PT`/`END` par les vrais temps de la voix.
 - Avec la voix : mettre `voix-episode4.mp3` (ou le mix) dans `episode4/public/`, puis
@@ -60,7 +60,7 @@ npx remotion render src/index.ts Demo out/demo.mp4 --browser-executable=/opt/pw-
 ## Prochaines étapes prévues
 
 1. **ElevenLabs** : l'utilisatrice ajoute `ELEVENLABS_API_KEY` dans les secrets de l'environnement et autorise `api.elevenlabs.io`. Ensuite : générer les voix directement, de vrais effets sonores, une musique douce, et les timings mot par mot.
-2. **Épisode 4 « Comment on fait ? »** avec Remotion, même style posé : toits verts (-10 °C, Ademe/Batiweb), biodiversité (36 toits, 292 espèces de plantes, 70 % venues seules, 611 invertébrés : ARB Île-de-France, GROOVES), ferme sur le toit Nature Urbaine (14 000 m², Paris), « imaginez ça sur les cités », limites (le toit n'appartient pas aux locataires, la loi Climat ne vise pas les logements, gentrification verte d'après Anguelovski et al. 2022, effet surtout au dernier étage, besoin d'eau, murs végétalisés), conclusion « Qui pollue ? les plus riches. Qui souffre ? les plus pauvres. Qui agit ? peut-être nous. ».
+2. **Épisode 4 « Comment on fait ? »** avec Remotion, même style posé : toits verts (80 °C pour un toit sombre contre 29 °C pour un toit végétalisé : étude pour l'ADEME), biodiversité (36 toits, près de 400 espèces de plantes, 611 invertébrés : ARB Île-de-France, GROOVES), ferme sur le toit Nature Urbaine (toit de 14 000 m², Paris), « imaginez ça sur les cités », limites (le toit n'appartient pas aux locataires, la loi Climat ne vise pas les logements, gentrification verte d'après Anguelovski et al. 2022, effet surtout au dernier étage, besoin d'eau, murs végétalisés), conclusion « Qui pollue ? les plus riches. Qui souffre ? les plus pauvres. Qui agit ? peut-être nous. ».
 3. **Miniatures TikTok** des 4 épisodes avec Canva (connecteur Canva disponible).
 4. Option : accroche forte au début des épisodes 1 et 2, et retrait du dessin de Samia.
 
