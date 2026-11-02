@@ -1,3 +1,3 @@
-// Début (s) de chaque scène. ESTIMÉ : à remplacer par les vrais temps de la voix (build_audio.py).
-export const PT = [0.6, 7.97, 13.31, 20.9, 30.53, 38.46, 47.06, 54.63, 66.63, 72.65, 82.27, 93.93, 102.54];
-export const END = 109.26;
+// Généré par build_audio.py (ne pas modifier à la main). Début (s) de chaque scène.
+export const PT = [0.0, 6.82, 11.27, 18.82, 28.44, 36.33, 44.97, 52.26, 66.76, 71.89, 81.21, 100.41, 109.0];
+export const END = 115.74;
