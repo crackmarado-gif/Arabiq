@@ -9,8 +9,8 @@ import glob, json, os, re, subprocess
 NARR = 'public/narrateur.mp3'
 # Quand narrateur.mp3 arrive : remplir NP (début de chacun des 11 paragraphes narrateur, via silencedetect)
 # et CUT1 / CUT2 (coupures dans les silences après le paragraphe 7 « contrôle » et après le 9 « match »).
-NP = None
-CUT1 = CUT2 = None
+NP = [0.0, 4.73, 9.54, 18.88, 28.99, 36.33, 44.91, 53.65, 59.24, 75.52, 86.48]
+CUT1, CUT2 = 53.35, 75.1
 EST = {1: 12.0, 2: 13.5}
 OFF, PAD = 0.3, 0.5
 CLEAN = 'aresample=44100,highpass=f=80,afftdn=nf=-25,loudnorm=I=-18:TP=-2'
@@ -87,6 +87,12 @@ for n, start in ((1, t1), (2, t2)):
     if n in tem:
         ins += ['-i', tem[n][0]]
         parts.append(f'[{k}:a]aresample=44100,adelay={int((start+PAD)*1000)}:all=1[t{n}]'); labels.append(f'[t{n}]'); k += 1
-parts.append(''.join(labels) + f'amix=inputs={len(labels)}:normalize=0,apad=whole_dur={end},loudnorm=I=-14:TP=-1.5:LRA=11[out]')
+from sfx import build as build_sfx
+build_sfx(PT, end, 'public/sfx-passine.wav')
+ins += ['-i', 'public/sfx-passine.wav']
+parts.append(''.join(labels) + f'amix=inputs={len(labels)}:normalize=0,apad=whole_dur={end},asplit=2[v][vsc]')
+# bruitages baissés automatiquement quand quelqu'un parle
+parts.append(f'[{k}:a]aresample=44100,volume=0.9[s];[s][vsc]sidechaincompress=threshold=0.03:ratio=5:attack=20:release=350[sd]')
+parts.append('[v][sd]amix=inputs=2:duration=first:normalize=0,loudnorm=I=-14:TP=-1.5:LRA=11[out]')
 subprocess.run(['ffmpeg', '-v', 'error', '-y', *ins, '-filter_complex', ';'.join(parts), '-map', '[out]', '-ar', '44100', '-ac', '2', 'public/mix-passine.wav'], check=True)
 print('narrateur :', 'oui' if narr_in[0] == '-i' else 'non (estimé)', '| témoignages :', sorted(tem), '| PT =', [round(x, 2) for x in PT], '| END =', round(end, 2))

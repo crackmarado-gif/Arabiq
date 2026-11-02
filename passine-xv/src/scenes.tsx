@@ -17,7 +17,7 @@ export const S1: React.FC = () => {
 // 2. Titre : Yassine… barré → PASSINE
 export const S2: React.FC = () => {
   const at = useAt(); const f = useCurrentFrame();
-  const y = useIn(3), strike = useLin(at(0.4), at(0.55)), p = useIn(at(0.55)), sub = useIn(at(0.7));
+  const y = useIn(3), strike = useLin(at(0.55), at(0.68)), p = useIn(at(0.7)), sub = useIn(at(0.82));
   const z = interpolate(f, [0, at(1)], [1, 1.05]);
   return (<Board>
     <AbsoluteFill style={{transform: `scale(${z})`}}>
@@ -34,7 +34,7 @@ export const S2: React.FC = () => {
 // 3. L'attaquant qui faisait peur : il fonce, les défenseurs reculent
 export const S3: React.FC = () => {
   const at = useAt();
-  const run = useLin(at(0.15), at(0.8)); const back = useLin(at(0.6), at(0.95)); const lb = useIn(at(0.7));
+  const run = useLin(at(0.15), at(0.8)); const back = useLin(at(0.7), at(0.95)); const lb = useIn(at(0.7));
   const [px, py] = pt([[540, 1450], [520, 1100], [560, 800]], run);
   const D: [number, number][] = [[360, 900], [540, 760], [720, 900], [540, 560]];
   return (<Board>
@@ -55,7 +55,7 @@ export const S3: React.FC = () => {
 // 4. Le style Hazard : dos au jeu, le « bouclier arrière »
 export const S4: React.FC = () => {
   const at = useAt(); const f = useCurrentFrame();
-  const sh = useIn(at(0.3)); const lb = useIn(at(0.68)); const push = Math.max(0, Math.sin(f / 9)) * 18;
+  const sh = useIn(at(0.3)); const lb = useIn(at(0.8)); const push = Math.max(0, Math.sin(f / 9)) * 18;
   return (<Board>
     <Kicker text="SA SIGNATURE" color={B.xv} top={170} />
     <Title lines={[{t: 'La technique', c: B.cream}, {t: 'Hazard', c: B.xv}]} size={110} top={200} />
@@ -88,7 +88,7 @@ const Jersey: React.FC<{x: number; y: number; id: string; a: string; b: string; 
 };
 export const S5: React.FC = () => {
   const at = useAt();
-  const j1 = useIn(at(0.35)), j2 = useIn(at(0.62));
+  const j1 = useIn(at(0.48)), j2 = useIn(at(0.7));
   return (<Board>
     <Kicker text="L'UNIFORME" color={B.xv} top={200} />
     <Title lines={[{t: 'Deux maillots.', c: B.cream}, {t: 'Pas un de plus.', c: B.xv}]} size={96} top={230} />
@@ -106,7 +106,7 @@ export const S5: React.FC = () => {
 // 6. Le Vesc : face aux gars du bled
 export const S6: React.FC = () => {
   const at = useAt(); const f = useCurrentFrame();
-  const opp = useLin(at(0.15), at(0.45)); const stamp = useIn(at(0.72));
+  const opp = useLin(at(0.15), at(0.45)); const stamp = useIn(at(0.85));
   return (<Board>
     <Kicker text="LE WEEK-END" color={B.xv} top={170} />
     <Title lines={[{t: 'Au Vesc.', c: B.cream}]} size={130} top={200} />
@@ -127,7 +127,7 @@ export const S6: React.FC = () => {
 // 7. Le contrôle zidanesque (au ralenti)
 export const S7: React.FC = () => {
   const at = useAt();
-  const fall = useLin(at(0.2), at(0.62)); const hit = useIn(at(0.62)); const lb = useIn(at(0.72));
+  const fall = useLin(at(0.28), at(0.5)); const hit = useIn(at(0.5)); const lb = useIn(at(0.78));
   const k = Easing.in(Easing.quad)(fall);
   const bx = lerp(820, 560, k), by = lerp(260, 1240, k);
   return (<Board>
@@ -166,8 +166,9 @@ export const S9: React.FC = () => {
 // 10. Les 33 tirs ratés : bâtons à la craie
 export const S10: React.FC = () => {
   const at = useAt();
-  const p = useLin(at(0.05), at(0.62)); const n = Math.min(33, Math.floor(Easing.in(Easing.quad)(p) * 33.999));
-  const eto = useIn(at(0.74));
+  const f = useCurrentFrame();
+  const n = f < at(0.03) ? 0 : Math.round(interpolate(f, [at(0.03), at(0.16), at(0.28), at(0.33), at(0.44)], [1, 2, 10, 20, 33], {extrapolateRight: 'clamp'}));
+  const eto0 = useIn(at(0.7)), eto = useIn(at(0.87));
   const marks: React.ReactNode[] = [];
   for (let i = 0; i < n; i++) {
     const g = Math.floor(i / 5), j = i % 5; const gx = 150 + (g % 3) * 280, gy = 600 + Math.floor(g / 3) * 240;
@@ -179,9 +180,9 @@ export const S10: React.FC = () => {
     <div style={{position: 'absolute', left: 90, top: 200, fontFamily: 'Oswald', fontWeight: 700, fontSize: 200, lineHeight: 1, color: B.cream}}>{n}<span style={{fontSize: 70, color: B.dim}}> tirs ratés</span></div>
     <div style={{position: 'absolute', left: 90, top: 420, fontFamily: 'Rubik', fontWeight: 700, fontSize: 40, letterSpacing: 4, color: B.xv, opacity: n >= 33 ? 1 : 0}}>D'AFFILÉE.</div>
     <Svg>{marks}</Svg>
-    <div style={{position: 'absolute', left: 90, width: 900, top: 1560, textAlign: 'center', opacity: eto, transform: `translateY(${(1 - eto) * 20}px)`}}>
-      <div style={{fontFamily: 'Rubik', fontWeight: 500, fontSize: 40, color: B.dim}}>Maillot porté ce soir-là : Barça, Eto'o 9</div>
-      <div style={{fontFamily: 'Oswald', fontWeight: 700, fontSize: 84, color: B.gold}}>ETO'O, LUI, MARQUAIT.</div>
+    <div style={{position: 'absolute', left: 90, width: 900, top: 1560, textAlign: 'center'}}>
+      <div style={{fontFamily: 'Rubik', fontWeight: 500, fontSize: 40, color: B.dim, opacity: eto0}}>Maillot porté ce soir-là : Barça, Eto'o 9</div>
+      <div style={{fontFamily: 'Oswald', fontWeight: 700, fontSize: 84, color: B.gold, opacity: eto, transform: `translateY(${(1 - eto) * 20}px)`}}>ETO'O, LUI, MARQUAIT.</div>
     </div>
   </Board>);
 };
@@ -215,7 +216,7 @@ export const S13: React.FC = () => {
   const at = useAt(); const sig = useIn(at(0.85));
   return (<AbsoluteFill style={{background: B.black}}>
     <Line text="33 tirs ratés." delay={at(0.03)} top={620} size={96} font="Oswald" color={B.cream} />
-    <Line text="1 contrôle réussi." delay={at(0.25)} top={760} size={96} font="Oswald" color={B.xv} />
+    <Line text="1 contrôle réussi." delay={at(0.3)} top={760} size={96} font="Oswald" color={B.xv} />
     <Line text="Pour Passine… le compte est bon." delay={at(0.5)} top={960} size={56} color={B.gold} />
     <div style={{position: 'absolute', top: 1500, width: W, textAlign: 'center', fontFamily: 'Rubik', fontWeight: 700, fontSize: 28, letterSpacing: 7, color: B.dim, opacity: sig}}>PASSINE · LA RECONVERSION · XV ORIGINALS</div>
   </AbsoluteFill>);
