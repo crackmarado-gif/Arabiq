@@ -8,5 +8,4 @@ Même format que `seb-xv/` : faux documentaire, tableau tactique à la craie.
 - `python3 build_audio.py` : nettoie, découpe et déforme les témoignages, monte `public/mix-passine.wav` et recalcule `src/timing.ts`.
   Sans `public/narrateur.mp3`, la place du narrateur est laissée vide (durées estimées). Quand il arrive : le déposer, remplir NP / CUT1 / CUT2 dans `build_audio.py`, relancer, puis `npm run render`.
 - Narrateur : `public/narrateur.mp3` (ElevenLabs, Adam) ; NP / CUT1 / CUT2 remplis dans `build_audio.py`.
-- Bruitages : `sfx.py` (synthétisés, calés en fraction de scène comme les animations), baissés automatiquement sous les voix.
-- Aperçu actuel : `passine-apercu.mp4` (narrateur + témoignages + bruitages).
+- Aperçu actuel : `passine-apercu.mp4` (narrateur + témoignages).
