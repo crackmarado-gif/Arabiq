@@ -9,8 +9,8 @@ import glob, json, os, re, subprocess
 NARR = 'public/narrateur.mp3'
 # Quand narrateur.mp3 arrive : remplir NP (début de chacun des 11 paragraphes narrateur, via silencedetect)
 # et CUT1 / CUT2 (coupures dans les silences après le paragraphe 5 « Super Saiyan » et après le 10 « downfall »).
-NP = None
-CUT1 = CUT2 = None
+NP = [0.0, 6.22, 9.66, 20.11, 29.82, 45.78, 55.66, 71.14, 81.84, 94.54, 101.42, 107.10]
+CUT1, CUT2 = 45.48, 94.26
 T_AFTER = (4, 8)   # index (0-based) des paragraphes narrateur après lesquels viennent les témoignages
 NPAR = 12
 EST = {1: 20.0, 2: 20.0}

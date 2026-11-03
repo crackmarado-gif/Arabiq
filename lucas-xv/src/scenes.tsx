@@ -29,13 +29,13 @@ export const S1: React.FC = () => {
   const at = useAt();
   return (<AbsoluteFill style={{background: B.black}}>
     <Line text="Certains attaquants viennent chercher le ballon." delay={at(0.05)} top={760} />
-    <Line text="Lucas, lui, s'installe directement chez l'adversaire." delay={at(0.5)} top={930} color={B.gold} />
+    <Line text="Lucas, lui, s'installe directement chez l'adversaire." delay={at(0.44)} top={930} color={B.gold} />
   </AbsoluteFill>);
 };
 
 export const S2: React.FC = () => {
   const at = useAt(); const f = useCurrentFrame();
-  const k = useIn(3), l = useIn(at(0.15)), sub = useIn(at(0.45));
+  const k = useIn(3), l = useIn(at(0.1)), sub = useIn(at(0.38));
   const z = interpolate(f, [0, at(1)], [1, 1.05]);
   return (<Board>
     <AbsoluteFill style={{transform: `scale(${z})`}}>
@@ -49,7 +49,7 @@ export const S2: React.FC = () => {
 // 3. Le renard : il campe dans la défense adverse
 export const S3: React.FC = () => {
   const at = useAt(); const f = useCurrentFrame();
-  const tent = useIn(at(0.45)); const lb = useIn(at(0.7));
+  const tent = useIn(at(0.45)); const lb = useIn(at(0.8));
   const D: [number, number, string][] = [[300, 760, '5'], [450, 720, '4'], [630, 720, '3'], [780, 760, '2'], [540, 520, '1']];
   return (<Board>
     <Kicker text="PARTIE 1 — LE RENARD" color={B.xv} top={130} />
@@ -72,7 +72,7 @@ export const S3: React.FC = () => {
 // 4. Malte
 export const S4: React.FC = () => {
   const at = useAt(); const f = useCurrentFrame();
-  const map = useLin(0, at(0.25)); const fly = useLin(at(0.15), at(0.4)); const cnt = useLin(at(0.45), at(0.85)); const lb = useIn(at(0.82));
+  const map = useLin(0, at(0.2)); const fly = useLin(at(0.12), at(0.3)); const cnt = useLin(at(0.32), at(0.7)); const lb = useIn(at(0.74));
   const n = Math.round(Easing.out(Easing.cubic)(cnt) * 27);
   const [px, py] = pt([[160, 520], [420, 400], [700, 660]], fly);
   return (<Board>
@@ -90,15 +90,15 @@ export const S4: React.FC = () => {
       <div style={{fontFamily: 'Rubik', fontWeight: 700, fontSize: 34, letterSpacing: 6, color: B.dim}}>DÉFENSEURS MALTAIS FRACASSÉS</div>
       <div style={{fontFamily: 'Oswald', fontWeight: 700, fontSize: 220, lineHeight: 1, color: B.gold}}>{n}{cnt >= 1 && Math.floor(f / 8) % 2 ? '+' : ''}</div>
     </div>
-    <Line text="Les défenseurs de l'île en parlent encore." delay={at(0.82)} top={1560} size={42} color={lb ? B.cream : B.cream} />
+    <Line text="Les défenseurs de l'île en parlent encore." delay={at(0.74)} top={1560} size={42} color={lb ? B.cream : B.cream} />
   </Board>);
 };
 
 // 5. Super Saiyan 3 : aura, buts en rafale, niveau de puissance
 export const S5: React.FC = () => {
   const at = useAt(); const f = useCurrentFrame();
-  const aura = useIn(at(0.25)); const goals = [0.42, 0.47, 0.52, 0.57, 0.62];
-  const p = useLin(at(0.72), at(0.92)); const lvl = Math.round(lerp(1200, 9001, Easing.in(Easing.quad)(p)));
+  const aura = useIn(at(0.33)); const goals = [0.52, 0.575, 0.63, 0.69, 0.75];
+  const p = useLin(at(0.8), at(0.94)); const lvl = Math.round(lerp(1200, 9001, Easing.in(Easing.quad)(p)));
   return (<Board>
     <Kicker text="LE RETOUR" color={B.xv} top={150} />
     <Title lines={[{t: 'Super Saiyan', c: B.cream}, {t: '3', c: B.gold}]} size={120} top={180} />
@@ -131,14 +131,14 @@ export const S7: React.FC = () => {
     <Breaking o={b} />
     <div style={{position: 'absolute', top: 600, width: W, textAlign: 'center', fontFamily: 'Rubik', fontWeight: 700, fontSize: 32, letterSpacing: 8, color: B.dim, opacity: b}}>PARTIE 2 — LA TRAGÉDIE</div>
     <Line text="Il y a des jours qui marquent une génération." delay={at(0.05)} top={720} />
-    <Line text="Des jours où le temps s'arrête." delay={at(0.32)} top={860} />
-    <Line text="Le duo Seb–Lucas." delay={at(0.68)} top={1040} size={110} font="Oswald" color={B.cream} />
+    <Line text="Des jours où le temps s'arrête." delay={at(0.3)} top={860} />
+    <Line text="Le duo Seb–Lucas." delay={at(0.76)} top={1040} size={110} font="Oswald" color={B.cream} />
   </AbsoluteFill>);
 };
 
 export const S8: React.FC = () => {
   const at = useAt(); const f = useCurrentFrame();
-  const lb1 = useIn(at(0.18)), lb2 = useIn(at(0.33)), vide = useIn(at(0.5)), ball = useIn(at(0.62));
+  const lb1 = useIn(at(0.24)), lb2 = useIn(at(0.41)), vide = useIn(at(0.63)), ball = useIn(at(0.7));
   return (<AbsoluteFill>
     <AbsoluteFill style={GREY}>
       <Board>
@@ -163,7 +163,7 @@ export const S8: React.FC = () => {
 
 export const S9: React.FC = () => {
   const at = useAt();
-  const c = useLin(at(0.02), at(0.3)); const cell = useIn(at(0.2)); const plaque = useIn(at(0.48)); const never = useIn(at(0.8));
+  const c = useLin(at(0.02), at(0.3)); const cell = useIn(at(0.22)); const plaque = useIn(at(0.66)); const never = useIn(at(0.85));
   return (<AbsoluteFill>
     <AbsoluteFill style={GREY}>
       <Board>
@@ -201,13 +201,13 @@ const Chart: React.FC<{upto: number; color?: string}> = ({upto, color = B.gold})
 
 export const S10: React.FC = () => {
   const at = useAt();
-  const k = useLin(at(0.05), at(0.6)); const cata = useIn(at(0.55)); const dep = useIn(at(0.8));
+  const k = useLin(at(0.2), at(0.66)); const cata = useIn(at(0.68)); const dep = useIn(at(0.79));
   return (<Board>
     <Kicker text="PARTIE 3 — LA CHUTE" color={B.xv} top={170} />
     <Title lines={[{t: 'Début de', c: B.cream}, {t: 'saison dernière.', c: B.xv}]} size={96} top={200} />
     <Svg><Chart upto={lerp(0.42, 0.62, k)} /></Svg>
     <div style={{position: 'absolute', right: 110, top: 1420, fontFamily: 'Oswald', fontWeight: 700, fontSize: 80, color: B.xv, opacity: cata, transform: `rotate(-6deg) scale(${1.2 - 0.2 * cata})`}}>CATACLYSMIQUE</div>
-    <Line text="Les experts parlent de la Grande Dépression." delay={at(0.8)} top={1600} size={42} color={dep ? B.cream : B.cream} />
+    <Line text="Les experts parlent de la Grande Dépression." delay={at(0.79)} top={1600} size={42} color={dep ? B.cream : B.cream} />
   </Board>);
 };
 
@@ -217,15 +217,15 @@ export const S12: React.FC = () => {
   const at = useAt();
   return (<AbsoluteFill style={{background: B.black}}>
     <Line text="Mais les grands joueurs ne restent jamais à terre." delay={at(0.03)} top={640} size={46} color={B.dim} />
-    <Line text="Doute." delay={at(0.4)} top={820} size={110} font="Oswald" />
-    <Line text="Remise en question." delay={at(0.55)} top={960} size={90} font="Oswald" color={B.xv} />
-    <Line text="Travail." delay={at(0.75)} top={1100} size={110} font="Oswald" color={B.gold} />
+    <Line text="Doute." delay={at(0.45)} top={820} size={110} font="Oswald" />
+    <Line text="Remise en question." delay={at(0.62)} top={960} size={90} font="Oswald" color={B.xv} />
+    <Line text="Travail." delay={at(0.82)} top={1100} size={110} font="Oswald" color={B.gold} />
   </AbsoluteFill>);
 };
 
 export const S13: React.FC = () => {
   const at = useAt();
-  const k = useLin(at(0.05), at(0.75)); const pr = useIn(at(0.75));
+  const k = useLin(at(0.1), at(0.6)); const pr = useIn(at(0.62));
   return (<Board>
     <Kicker text="LE RETOUR" color={B.xv} top={170} />
     <Title lines={[{t: 'Le renard', c: B.cream}, {t: 'est revenu.', c: B.gold}]} size={110} top={200} />
@@ -240,7 +240,7 @@ export const S14: React.FC = () => {
   const at = useAt(); const sig = useIn(at(0.86));
   return (<AbsoluteFill style={{background: B.black}}>
     <Line text="Lucas." delay={at(0.03)} top={600} size={130} font="Oswald" />
-    <Line text="Un buteur. Un renard." delay={at(0.22)} top={800} size={64} font="Oswald" color={B.xv} />
+    <Line text="Un buteur. Un renard." delay={at(0.2)} top={800} size={64} font="Oswald" color={B.xv} />
     <Line text="Et surtout… un bon gars." delay={at(0.5)} top={960} size={64} color={B.gold} />
     <div style={{position: 'absolute', top: 1500, width: W, textAlign: 'center', fontFamily: 'Rubik', fontWeight: 700, fontSize: 28, letterSpacing: 7, color: B.dim, opacity: sig}}>LUCAS · LE RETOUR DU SUPER SAIYAN · XV ORIGINALS</div>
   </AbsoluteFill>);

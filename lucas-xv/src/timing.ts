@@ -1,3 +1,3 @@
 // Généré par build_audio.py (ne pas modifier à la main). Début (s) de chaque scène.
-export const PT = [0.0, 5.14, 7.91, 17.92, 26.2, 36.56, 62.47, 72.13, 85.2, 95.21, 105.57, 132.04, 138.94, 143.78];
-export const END = 149.83;
+export const PT = [0.0, 6.52, 9.96, 20.41, 30.12, 45.78, 71.69, 81.57, 97.05, 107.75, 120.17, 146.62, 153.5, 159.18];
+export const END = 166.11;
