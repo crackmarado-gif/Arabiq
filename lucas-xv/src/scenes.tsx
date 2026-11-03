@@ -211,7 +211,8 @@ export const S10: React.FC = () => {
   </Board>);
 };
 
-export const S11: React.FC = () => <Testimony n={2} text="" />;
+// Témoignage 2 : un témoin du duo Seb–Lucas (dans l'édition spéciale)
+export const S11: React.FC = () => (<AbsoluteFill><Testimony n={2} text="" /><Breaking /></AbsoluteFill>);
 
 export const S12: React.FC = () => {
   const at = useAt();
@@ -246,4 +247,5 @@ export const S14: React.FC = () => {
   </AbsoluteFill>);
 };
 
-export const SCENES = [S1, S2, S3, S4, S5, S6, S7, S8, S9, S10, S11, S12, S13, S14];
+// Ordre : … le deuil (S9) → témoignage 2 (S11) → le downfall (S10) → …
+export const SCENES = [S1, S2, S3, S4, S5, S6, S7, S8, S9, S11, S10, S12, S13, S14];

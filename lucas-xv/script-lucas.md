@@ -36,12 +36,12 @@ Une ligne = une scène. Narrateur = voix grave (ElevenLabs, Adam). Témoignages 
 **9. Le deuil** — Narrateur
 > Les témoins parlent d'un choc. Une cellule de soutien psychologique a été ouverte au bord du terrain. Aujourd'hui encore, une plaque rappelle ce jour. Plus jamais ça.
 
+**9 bis. Témoignage 2** — témoin du duo Seb–Lucas (voix déformée, bandeau « Édition spéciale »)
+
 ## Partie 3 — La chute et la renaissance
 
 **10. Le downfall** — Narrateur
 > Et puis, début de saison dernière, le Super Saiyan s'éteint. Ses tirs partent dans les nuages. Son jeu devient… cataclysmique. Les experts parlent encore de la Grande Dépression.
-
-**11. Témoignage 2** — ton audio (voix déformée)
 
 **12. La remise en question** — Narrateur
 > Mais les grands joueurs ne restent jamais à terre. Lucas doute. Il se remet en question. Il travaille.
