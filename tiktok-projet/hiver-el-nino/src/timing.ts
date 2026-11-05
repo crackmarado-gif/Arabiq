@@ -1,3 +1,3 @@
 // Temps des scènes (s). Version SANS voix : extrait vidéo + durées de lecture. Quand la voix arrive, recaler.
-export const PT = [0.0, 14.67, 18.17, 23.67, 32.17, 43.17, 52.17, 59.17, 69.17, 75.67];
-export const END = 82.17;
+export const PT = [0.0, 14.67, 18.17, 25.3, 33.8, 44.8, 53.8, 60.8, 70.8, 77.3];
+export const END = 83.8;

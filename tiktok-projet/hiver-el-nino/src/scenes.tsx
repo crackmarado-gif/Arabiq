@@ -73,23 +73,39 @@ export const S0b: React.FC = () => {
   </AbsoluteFill>);
 };
 
-// 1. Accroche : la fausse info
+// 1. La rumeur : 2e clic → la vraie vidéo (Démotivateur) s'ouvre, son titre, puis tampon FAUX
+const R_CLICK = 22, R_OPEN = 26, R_PLAY = 36, R_LEN = 101; // 3,36 s de titre
 export const S1: React.FC = () => {
-  const at = useAt();
-  const card = useIn(2), stamp = useIn(at(0.55));
+  const f = useCurrentFrame(); const {fps} = useVideoConfig();
+  const thumb = spring({frame: f, fps, config: {damping: 200}});
+  const cur = interpolate(f, [0, R_CLICK], [0, 1], {extrapolateRight: 'clamp', easing: Easing.inOut(Easing.cubic)});
+  const press = f >= R_CLICK && f < R_CLICK + 5 ? 0.92 : 1;
+  const open = spring({frame: f - R_OPEN, fps, config: {damping: 18, stiffness: 140}});
+  const ripple = interpolate(f, [R_CLICK, R_CLICK + 14], [0, 1], {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'});
+  const stamp = spring({frame: f - (R_PLAY + R_LEN + 8), fps, config: {damping: 200}});
+  const w = interpolate(open, [0, 1], [240, 600]), h = w * (1024 / 576) + 54;
+  const cx = 540, cy = interpolate(open, [0, 1], [1150, 930]);
+  const px = interpolate(cur, [0, 1], [880, cx + 30]), py = interpolate(cur, [0, 1], [1760, 1180]);
   return (<AbsoluteFill style={{background: C.night}}>
-    <div style={{position: 'absolute', left: 90, top: 210, fontFamily: 'Rubik', fontWeight: 700, fontSize: 28, letterSpacing: 5, color: '#9BA6D9', opacity: card}}>HORS-SÉRIE · TOITS VERTS CONTRE LES 1 %</div>
-    <div style={{position: 'absolute', left: 110, top: 520, width: 860, padding: '50px 54px', boxSizing: 'border-box', background: '#fff', borderRadius: 34, boxShadow: '0 30px 60px rgba(0,0,0,.35)', opacity: card, transform: `rotate(-2deg) translateY(${(1 - card) * 40}px)`}}>
-      <div style={{display: 'flex', alignItems: 'center', gap: 18, marginBottom: 22}}>
-        <svg width={64} height={64} viewBox="-60 -60 120 120"><Snow x={0} y={0} s={1} /></svg>
-        <span style={{fontFamily: 'Rubik', fontWeight: 800, fontSize: 34, letterSpacing: 4, color: '#C8102E'}}>ALERTE</span>
+    <div style={{position: 'absolute', left: 90, top: 150, fontFamily: 'Rubik', fontWeight: 700, fontSize: 28, letterSpacing: 5, color: '#9BA6D9', opacity: thumb}}>CE QUI TOURNE EN CE MOMENT…</div>
+    <div style={{position: 'absolute', left: cx - w / 2, top: cy - h / 2, width: w, height: h, borderRadius: 26, background: '#fff', overflow: 'hidden', boxShadow: '0 30px 70px rgba(0,0,0,.45)', opacity: thumb, transform: `scale(${f < R_OPEN ? press : 1})`}}>
+      <div style={{height: 54, background: '#ECEFF3', display: 'flex', alignItems: 'center', gap: 12, paddingLeft: 22}}>
+        {['#FF5F57', '#FEBC2E', '#28C840'].map((c) => <span key={c} style={{width: 16, height: 16, borderRadius: 8, background: c, display: 'inline-block'}} />)}
+        <span style={{marginLeft: 16, fontFamily: 'Rubik', fontWeight: 500, fontSize: 24, color: '#6B7280'}}>vidéo</span>
       </div>
-      <div style={{fontFamily: 'Oswald', fontWeight: 700, fontSize: 92, lineHeight: 1.05, color: C.ink, textTransform: 'uppercase'}}>Un hiver glacial à cause d'El Niño</div>
-      <div style={{fontFamily: 'Rubik', fontWeight: 500, fontSize: 32, color: '#8A8F98', marginTop: 24}}>Vu partout sur les réseaux</div>
+      <div style={{position: 'absolute', left: 0, right: 0, top: 54, bottom: 0, background: '#0E0F0E', display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
+        {f < R_PLAY && <svg width={90} height={90} viewBox="0 0 110 110" style={{opacity: 1 - open}}><circle cx={55} cy={55} r={52} fill="rgba(255,255,255,.18)" /><path d="M44 32 L80 55 L44 78 Z" fill="#fff" /></svg>}
+        <Sequence from={R_PLAY} layout="none"><OffthreadVideo src={staticFile('rumeur.mp4')} style={{width: '100%', height: '100%', objectFit: 'cover'}} /></Sequence>
+      </div>
     </div>
-    <div style={{position: 'absolute', left: 0, width: W, top: 1240, textAlign: 'center', opacity: stamp}}>
-      <span style={{display: 'inline-block', padding: '10px 54px', border: `10px solid ${C.orange}`, borderRadius: 22, fontFamily: 'Oswald', fontWeight: 700, fontSize: 170, color: C.orange, transform: `rotate(-8deg) scale(${1.15 - 0.15 * stamp})`}}>FAUX</span>
+    {f < R_OPEN + 6 && <svg width={W} height={H} viewBox={`0 0 ${W} ${H}`} style={{position: 'absolute', inset: 0}}>
+      {ripple > 0 && ripple < 1 && <circle cx={cx + 30} cy={1180} r={20 + ripple * 60} fill="none" stroke="#fff" strokeWidth={5} opacity={1 - ripple} />}
+      <path d="M0 0 L0 62 L16 48 L28 74 L40 68 L28 44 L50 44 Z" transform={`translate(${px} ${py}) scale(${press})`} fill="#fff" stroke="#111" strokeWidth={4} strokeLinejoin="round" />
+    </svg>}
+    <div style={{position: 'absolute', left: 0, width: W, top: 1360, textAlign: 'center', opacity: stamp}}>
+      <span style={{display: 'inline-block', padding: '10px 54px', border: `10px solid ${C.orange}`, borderRadius: 22, background: 'rgba(30,36,64,.55)', fontFamily: 'Oswald', fontWeight: 700, fontSize: 170, color: C.orange, transform: `rotate(-8deg) scale(${1.15 - 0.15 * stamp})`}}>FAUX</span>
     </div>
+    <div style={{position: 'absolute', left: 90, width: 900, top: 1820, textAlign: 'center', fontFamily: 'Rubik', fontWeight: 500, fontSize: 24, color: '#9BA6D9', opacity: open}}>Extrait : @demotivateur_fr sur TikTok · le titre, pas toute la vidéo</div>
   </AbsoluteFill>);
 };
 

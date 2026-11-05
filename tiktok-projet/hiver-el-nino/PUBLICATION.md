@@ -1,6 +1,6 @@
 # Kit de publication — « Hiver glacial à cause d'El Niño ? Faux. »
 
-**Vidéo prête** : `tiktok-projet/videos/hiver-el-nino.mp4` (1080×1920, 1 min 22). Ouverture : clic → fenêtre → extrait vidéo (avec son), puis la vidéo sans voix.
+**Vidéo prête** : `tiktok-projet/videos/hiver-el-nino.mp4` (1080×1920, 1 min 24). Ouverture : clic → fenêtre → extrait vidéo (avec son), puis la vidéo sans voix.
 **Couverture** : `tiktok-projet/videos/hiver-el-nino-couverture.png` (la carte « ALERTE » + tampon « FAUX »).
 
 ## Pourquoi ce sujet (choix de la nuit)
@@ -17,6 +17,10 @@ Seul l'extrait d'ouverture a du son ; le reste est muet. Deux options :
 ## L'extrait d'ouverture
 - Source : vidéo TikTok de @humourfilm78 (extrait de film). Crédit affiché à l'écran.
 - Les droits appartiennent au film : TikTok peut couper le son ou limiter la vidéo. Alternative sans risque : utiliser la fonction **Stitch** de TikTok sur la vidéo d'origine, puis enchaîner avec la nôtre (sans l'ouverture).
+
+## L'extrait de la rumeur
+- Titre de la vidéo TikTok de @demotivateur_fr (« L'hiver qui arrive risque d'être terriblement froid à cause de ça ! »), 3 s, crédité à l'écran.
+- On vise **le titre**, pas toute leur vidéo (elle semble nuancer à la fin : « ne signifie pas… », « aussi d'autres… ») : à vérifier en la réécoutant.
 
 ## Légende (TikTok / Instagram)
 > Hiver glacial à cause d'El Niño ? 🥶 C'est ce qui tourne partout… mais Météo-France annonce l'inverse. Le vrai problème, c'est nos logements. Sources dans la vidéo 👇
