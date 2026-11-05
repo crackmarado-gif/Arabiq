@@ -9,6 +9,7 @@ Série d'explication en 4 épisodes, tirée du PowerPoint « Toits verts contre 
 | 1 | Pourquoi il fait si chaud ? | ✅ Terminé (85 s) | `videos/episode1.mp4` |
 | 2 | Qui est responsable ? | ✅ Terminé (97 s) | `videos/episode2.mp4` |
 | 3 | Et nous, dans tout ça ? | ✅ Terminé, version « calme » (94 s) | `videos/episode3.mp4` |
+| HS | Hiver glacial à cause d'El Niño ? Faux. | ✅ Prête (muette, 1 min 04) | `videos/hiver-el-nino.mp4`, kit `hiver-el-nino/PUBLICATION.md` |
 | 4 | Comment on fait ? (les solutions) | 🟡 Texte + animation faits (Remotion), **voix à générer** | `episode4/`, aperçu muet `videos/episode4-apercu-muet.mp4` |
 
 ## Ce que l'utilisatrice préfère (décisions prises)
