@@ -1,6 +1,6 @@
 # Kit de publication — « Hiver glacial à cause d'El Niño ? Faux. »
 
-**Vidéo prête** : `tiktok-projet/videos/hiver-el-nino.mp4` (1080×1920, 1 min 04, sans son).
+**Vidéo prête** : `tiktok-projet/videos/hiver-el-nino.mp4` (1080×1920, 1 min 22). Ouverture : clic → fenêtre → extrait vidéo (avec son), puis la vidéo sans voix.
 **Couverture** : `tiktok-projet/videos/hiver-el-nino-couverture.png` (la carte « ALERTE » + tampon « FAUX »).
 
 ## Pourquoi ce sujet (choix de la nuit)
@@ -10,9 +10,13 @@
 - **Lisible sans le son** : tout est écrit à l'écran (beaucoup regardent en muet).
 
 ## Le son
-La vidéo est muette. Deux options :
+Seul l'extrait d'ouverture a du son ; le reste est muet. Deux options :
 1. **Rapide (conseillé pour publier aujourd'hui)** : dans TikTok/Instagram, ajoute un son tendance calme, volume bas (~10-15 %).
 2. **Avec voix** : génère `texte-voix-hiver.md` dans ElevenLabs (voix Adam) et envoie-le à Claude : il recale les scènes sur la voix (comme pour les épisodes XV).
+
+## L'extrait d'ouverture
+- Source : vidéo TikTok de @humourfilm78 (extrait de film). Crédit affiché à l'écran.
+- Les droits appartiennent au film : TikTok peut couper le son ou limiter la vidéo. Alternative sans risque : utiliser la fonction **Stitch** de TikTok sur la vidéo d'origine, puis enchaîner avec la nôtre (sans l'ouverture).
 
 ## Légende (TikTok / Instagram)
 > Hiver glacial à cause d'El Niño ? 🥶 C'est ce qui tourne partout… mais Météo-France annonce l'inverse. Le vrai problème, c'est nos logements. Sources dans la vidéo 👇

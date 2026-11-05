@@ -1,5 +1,5 @@
 import React from 'react';
-import {AbsoluteFill, Easing, interpolate, useCurrentFrame} from 'remotion';
+import {AbsoluteFill, Easing, OffthreadVideo, Sequence, interpolate, spring, staticFile, useCurrentFrame, useVideoConfig} from 'remotion';
 import {C, Chip, Kicker, Para, Source, Title, Tower, clamp, useAt, useIn, useLin} from './ui';
 
 const W = 1080, H = 1920;
@@ -24,6 +24,53 @@ const Cloud: React.FC<{x: number; y: number; s?: number; o?: number}> = ({x, y, 
     <path d="M-50 10 a28 28 0 0 1 10 -50 a36 36 0 0 1 66 8 a26 26 0 0 1 24 42 Z" fill="#B9C3CC" />
     {[-30, 0, 30].map((dx, i) => { const k = ((f / 18 + i * 0.33) % 1); return <line key={i} x1={dx} y1={22 + k * 40} x2={dx - 6} y2={36 + k * 40} stroke={BLUE} strokeWidth={6} strokeLinecap="round" opacity={1 - k} />; })}
   </g>);
+};
+
+// 0. Ouverture : clic → une fenêtre s'ouvre → l'extrait vidéo (avec son)
+const CLICK = 28, OPEN = 32, PLAY = 44; // images (30 i/s)
+export const S0: React.FC = () => {
+  const f = useCurrentFrame(); const {fps} = useVideoConfig(); const at = useAt();
+  const thumb = spring({frame: f, fps, config: {damping: 200}});
+  const cur = interpolate(f, [0, CLICK], [0, 1], {extrapolateRight: 'clamp', easing: Easing.inOut(Easing.cubic)});
+  const press = f >= CLICK && f < CLICK + 5 ? 0.92 : 1;
+  const open = spring({frame: f - OPEN, fps, config: {damping: 18, stiffness: 140}});
+  const ripple = interpolate(f, [CLICK, CLICK + 14], [0, 1], {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'});
+  const out = interpolate(f, [at(0.96), at(1)], [1, 0], {extrapolateLeft: 'clamp', extrapolateRight: 'clamp'});
+  // la vignette (petite) devient la fenêtre (grande)
+  const w = interpolate(open, [0, 1], [380, 960]), h = interpolate(open, [0, 1], [250, 600]);
+  const cx = 540, cy = interpolate(open, [0, 1], [1100, 980]);
+  const cx0 = interpolate(cur, [0, 1], [900, cx + 40]), cy0 = interpolate(cur, [0, 1], [1700, 1130]);
+  return (<AbsoluteFill style={{background: C.night, opacity: out}}>
+    <div style={{position: 'absolute', left: 90, top: 360, fontFamily: 'Rubik', fontWeight: 700, fontSize: 30, letterSpacing: 5, color: '#9BA6D9', opacity: thumb}}>VU SUR LES RÉSEAUX…</div>
+    <div style={{position: 'absolute', left: cx - w / 2, top: cy - h / 2, width: w, height: h, borderRadius: 26, background: '#fff', overflow: 'hidden', boxShadow: '0 30px 70px rgba(0,0,0,.45)', opacity: thumb, transform: `scale(${f < OPEN ? press : 1})`}}>
+      <div style={{height: 54, background: '#ECEFF3', display: 'flex', alignItems: 'center', gap: 12, paddingLeft: 22}}>
+        {['#FF5F57', '#FEBC2E', '#28C840'].map((c) => <span key={c} style={{width: 16, height: 16, borderRadius: 8, background: c, display: 'inline-block'}} />)}
+        <span style={{marginLeft: 16, fontFamily: 'Rubik', fontWeight: 500, fontSize: 24, color: '#6B7280'}}>vidéo</span>
+      </div>
+      <div style={{position: 'absolute', left: 0, right: 0, top: 54, bottom: 0, background: '#0E0F0E', display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
+        {f < PLAY && <svg width={110} height={110} viewBox="0 0 110 110" style={{opacity: 1 - open}}><circle cx={55} cy={55} r={52} fill="rgba(255,255,255,.18)" /><path d="M44 32 L80 55 L44 78 Z" fill="#fff" /></svg>}
+        <Sequence from={PLAY} layout="none"><OffthreadVideo src={staticFile('extrait.mp4')} style={{width: '100%', height: '100%', objectFit: 'contain'}} /></Sequence>
+      </div>
+    </div>
+    {f < OPEN + 6 && <svg width={W} height={H} viewBox={`0 0 ${W} ${H}`} style={{position: 'absolute', inset: 0}}>
+      {ripple > 0 && ripple < 1 && <circle cx={cx + 40} cy={1130} r={20 + ripple * 60} fill="none" stroke="#fff" strokeWidth={5} opacity={1 - ripple} />}
+      <path d="M0 0 L0 62 L16 48 L28 74 L40 68 L28 44 L50 44 Z" transform={`translate(${cx0} ${cy0}) scale(${press})`} fill="#fff" stroke="#111" strokeWidth={4} strokeLinejoin="round" />
+    </svg>}
+    <div style={{position: 'absolute', left: 90, width: 900, top: 1330, textAlign: 'center', fontFamily: 'Rubik', fontWeight: 500, fontSize: 26, color: '#9BA6D9', opacity: open}}>Extrait : @humourfilm78 sur TikTok</div>
+  </AbsoluteFill>);
+};
+
+// 0 bis. « Et toi aussi, tu sens le froid qui arrive ? »
+export const S0b: React.FC = () => {
+  const at = useAt(); const f = useCurrentFrame();
+  const a = useIn(at(0.08)), b = useIn(at(0.3));
+  return (<AbsoluteFill style={{background: C.night}}>
+    <svg width={W} height={H} viewBox={`0 0 ${W} ${H}`} style={{position: 'absolute', inset: 0}}>
+      {Array.from({length: 40}).map((_, i) => { const x = (i * 263) % W; const y = ((i * 197 + f * (2 + (i % 3))) % (H + 40)) - 20; return <circle key={i} cx={x + Math.sin(f / 30 + i) * 14} cy={y} r={3 + (i % 3) * 2} fill="#fff" opacity={0.55} />; })}
+    </svg>
+    <div style={{position: 'absolute', left: 90, width: 900, top: 760, textAlign: 'center', fontFamily: 'Rubik', fontWeight: 500, fontSize: 60, color: '#E8E4F5', opacity: a, transform: `translateY(${(1 - a) * 20}px)`}}>Et toi aussi…</div>
+    <div style={{position: 'absolute', left: 90, width: 900, top: 870, textAlign: 'center', fontFamily: 'Oswald', fontWeight: 700, fontSize: 104, lineHeight: 1.08, color: '#fff', textTransform: 'uppercase', opacity: b, transform: `translateY(${(1 - b) * 20}px)`}}>tu sens le froid<br /><span style={{color: '#8FC3F0'}}>qui arrive ?</span></div>
+  </AbsoluteFill>);
 };
 
 // 1. Accroche : la fausse info
@@ -198,5 +245,5 @@ export const S8: React.FC = () => {
   </AbsoluteFill>);
 };
 
-export const SCENES = [S1, S2, S3, S4, S5, S6, S7, S8];
+export const SCENES = [S0, S0b, S1, S2, S3, S4, S5, S6, S7, S8];
 void interpolate; void Para;

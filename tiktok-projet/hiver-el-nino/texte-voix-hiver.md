@@ -1,13 +1,15 @@
 # « Hiver glacial à cause d'El Niño ? Faux. » (hors-série de « Toits verts contre les 1 % »)
 
-Voix : ElevenLabs « Adam – American, Dark and Tough », eleven v4. ≈ 190 mots, ≈ 1 min 05.
+Voix : ElevenLabs « Adam – American, Dark and Tough », eleven v4. ≈ 200 mots, ≈ 1 min 05 de voix + 14 s d'extrait au début (≈ 1 min 22 au total).
 La vidéo se lit aussi **sans voix** : chaque idée est écrite en grand à l'écran (beaucoup de gens regardent en muet).
 Les « … » marquent une pause ; nombres en toutes lettres pour la voix. Une ligne = une scène.
 
 ---
 
-**1. Accroche**
-> Cet hiver va être glacial à cause d'El Niño. Tu l'as vu passer partout. Problème… c'est faux.
+**0. Ouverture (pas de voix)** — l'extrait vidéo joue avec son propre son (extrait : @humourfilm78 sur TikTok).
+
+**1. Accroche** (la voix commence juste après l'extrait)
+> Et toi aussi, tu sens le froid qui arrive ? Sur les réseaux, une rumeur tourne : cet hiver serait glacial à cause d'El Niño. Problème… c'est faux.
 
 **2. El Niño, c'est quoi ?**
 > El Niño, c'est un réchauffement de l'océan Pacifique, près de l'équateur. Il revient tous les deux à sept ans. Et cette année, il est fort. Très fort.
