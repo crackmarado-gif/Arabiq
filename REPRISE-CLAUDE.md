@@ -68,10 +68,10 @@ Lire `tiktok-projet/README.md` (historique, palette, pipeline des épisodes 1-3)
 - Navigateur : Chromium déjà installé, chemin pour Remotion :
   `/opt/pw-browsers/chromium_headless_shell-1243/chrome-headless-shell-linux64/chrome-headless-shell`
 - `ffmpeg` / `ffprobe` disponibles ; Python 3 avec **numpy**.
-- **Réseau restreint** (proxy) : bloqués à ce jour → `api.elevenlabs.io`, `canva.com` (téléchargements), `huggingface.co`, `batiweb.com`, `data.iau-idf.fr`. Autorisés : npm, PyPI, apt, GitHub. Pour débloquer : réglages de l'environnement → Network access → domaines autorisés.
+- **Réseau restreint** (proxy) : bloqués à ce jour → `api.elevenlabs.io`, `canva.com` (téléchargements), `batiweb.com`, `data.iau-idf.fr`. Autorisés : npm, PyPI, apt, GitHub. Pour débloquer : réglages de l'environnement → Network access → domaines autorisés.
 - Secret `ELEVENLABS_API_KEY` présent dans l'environnement, mais domaine bloqué (clé jamais testée).
 - `espeak-ng` + voix MBROLA (`mbrola-fr1`) installables par apt pour une voix de synthèse — **qualité jugée insuffisante**, ne pas utiliser pour le rendu final.
-- Pas d'outil de transcription (Whisper bloqué) : l'alignement voix/texte se fait à la main avec `silencedetect` (voir §4).
+- **Transcription disponible** depuis le 5/11/2026 : Hugging Face autorisé, faster-whisper (voir `outils/README.md`). Sert à savoir ce que disent les témoignages et à faire les sous-titres. L'alignement du narrateur peut toujours se faire avec `silencedetect` (voir §4).
 
 ### Outils de Claude utilisés
 - Lecture/écriture de fichiers, terminal (bash), git (commit + push sur la branche).

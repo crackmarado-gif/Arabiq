@@ -1,6 +1,7 @@
 import React from 'react';
 import {AbsoluteFill, Easing, interpolate, useCurrentFrame} from 'remotion';
 import {Kicker, Title, clamp, useAt, useIn, useLin} from './ui';
+import {SUBS1, SUBS2} from './subs';
 import {Arrow, B, Ball, Board, Chalk, Disc, Label, Line, Pitch, Svg, Testimony, W, lerp, pt} from './kit';
 
 const GREY: React.CSSProperties = {filter: 'grayscale(1) contrast(1.05)'};
@@ -121,7 +122,7 @@ export const S5: React.FC = () => {
 };
 
 // 6. Témoignage 1
-export const S6: React.FC = () => <Testimony n={1} text="" />;
+export const S6: React.FC = () => <Testimony n={1} text="" subs={SUBS1} />;
 
 // ───────── PARTIE 2 — LA TRAGÉDIE (noir et blanc) ─────────
 
@@ -212,7 +213,7 @@ export const S10: React.FC = () => {
 };
 
 // Témoignage 2 : un témoin du duo Seb–Lucas (dans l'édition spéciale)
-export const S11: React.FC = () => (<AbsoluteFill><Testimony n={2} text="" /><Breaking /></AbsoluteFill>);
+export const S11: React.FC = () => (<AbsoluteFill><Testimony n={2} text="" subs={SUBS2} /><Breaking /></AbsoluteFill>);
 
 export const S12: React.FC = () => {
   const at = useAt();

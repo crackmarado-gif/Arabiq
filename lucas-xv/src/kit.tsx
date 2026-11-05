@@ -72,7 +72,7 @@ export const Line: React.FC<{text: string; delay: number; top: number; size?: nu
 };
 
 // 7 & 11. Témoignages (voix déformée)
-export const Testimony: React.FC<{text: string; n: number}> = ({text, n}) => {
+export const Testimony: React.FC<{text: string; n: number; subs?: {s: number; e: number; t: string}[]}> = ({text, n, subs}) => {
   const at = useAt(); const f = useCurrentFrame(); const s = useIn(at(0.08)); const talk = f > at(0.05) && f < at(0.92);
   return (<AbsoluteFill style={{background: B.black}}>
     <Kicker text={`TÉMOIGNAGE ${n}`} color={B.xv} top={420} />
@@ -80,5 +80,6 @@ export const Testimony: React.FC<{text: string; n: number}> = ({text, n}) => {
     <Svg>{Array.from({length: 33}).map((_, i) => { const h = talk ? 20 + 160 * Math.abs(Math.sin(f / 3.1 + i * 0.7) * hash(i + Math.floor(f / 3))) : 8;
       return <rect key={i} x={110 + i * 26} y={880 - h / 2} width={14} height={h} rx={7} fill={i % 5 === 0 ? B.xv : B.cream} opacity={0.85} />; })}</Svg>
     <div style={{position: 'absolute', left: 90, width: 900, top: 1150, textAlign: 'center', fontFamily: 'Rubik', fontWeight: 700, fontSize: 46, lineHeight: 1.3, color: B.cream, opacity: s}}>{text ? `« ${text} »` : null}</div>
+    {subs && (() => { const t = f / 30 - 1.0; const cur = subs.find((x) => t >= x.s - 0.05 && t < x.e + 0.25); return cur ? <div style={{position: 'absolute', left: 80, width: 920, top: 1120, textAlign: 'center', fontFamily: 'Rubik', fontWeight: 700, fontSize: 50, lineHeight: 1.3, color: B.cream}}>{cur.t}</div> : null; })()}
   </AbsoluteFill>);
 };
