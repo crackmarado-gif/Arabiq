@@ -169,8 +169,16 @@ def build_audio(path):
                      f"volume=4dB,adelay={d}|{d}[q{i}]")
         labels.append(f"[q{i}]")
     parts.append("[0:a]highpass=f=80,volume=14dB[v]")
+    # background music, ducked under the voices
+    music = os.path.join(HERE, "musique.wav")
+    subprocess.run(["python3", os.path.join(HERE, "musique.py"), str(DUR)], check=True, stdout=subprocess.DEVNULL)
+    inputs += ["-i", music]
+    mi = len(CLIPS) + 1
     graph = ";".join(parts) + ";" + "[v]" + "".join(labels) + \
-        f"amix=inputs={len(CLIPS)+1}:normalize=0:duration=first,alimiter=limit=0.9,aformat=sample_rates=48000:channel_layouts=stereo[a]"
+        f"amix=inputs={len(CLIPS)+1}:normalize=0:duration=first,aformat=sample_rates=48000:channel_layouts=stereo,asplit=2[vo][sc];" \
+        f"[{mi}:a]volume=-17dB,aformat=sample_rates=48000:channel_layouts=stereo[m];" \
+        f"[m][sc]sidechaincompress=threshold=0.02:ratio=4:attack=20:release=400[md];" \
+        f"[vo][md]amix=inputs=2:normalize=0:duration=first,alimiter=limit=0.9[a]"
     subprocess.run(["ffmpeg", "-y", "-loglevel", "error", *inputs, "-filter_complex", graph, "-map", "[a]",
                     "-c:a", "aac", "-b:a", "192k", path], check=True)
 
