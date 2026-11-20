@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Test effets pixel art</title>
+<style>
+:root{--bg:#0f0f1a;--card:#1e1e35;--border:#2a2a50;--text:#f0f0ff;--text2:#a0a0c0;--accent:#7c6fff;--green:#43e8b0;--red:#ff5c7c}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:24px 16px;gap:16px}
+h1{font-size:1.2rem;color:var(--text2);font-weight:600}
+.card{position:relative;width:100%;max-width:420px;background:var(--card);border:1px solid var(--border);border-radius:14px;padding:24px;text-align:center;overflow:hidden}
+.letter{font-family:'Arial','Noto Naskh Arabic',serif;font-size:5rem;line-height:1.3;direction:rtl}
+.q{color:var(--text2);margin-bottom:16px}
+.choices{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:16px}
+button{padding:14px 8px;border:1.5px solid var(--border);border-radius:10px;background:#252545;color:var(--text);font-size:1rem;font-weight:600;cursor:pointer}
+button:disabled{opacity:.5;cursor:default}
+button.ok{border-color:var(--green);background:#1d4a3d}
+button.ko{border-color:var(--red);background:#4a1d2a}
+.score{color:var(--text2);font-size:.9rem}
+canvas{position:absolute;inset:0;width:100%;height:100%;image-rendering:pixelated;pointer-events:none}
+.credit{font-size:.75rem;color:#606090}
+.credit a{color:#8a80ff}
+</style>
+</head>
+<body>
+<h1>Test : effets pixelfx dans Arabiq</h1>
+<div class="card">
+  <p class="q">Quelle est cette lettre ?</p>
+  <div class="letter" id="letter"></div>
+  <div class="choices" id="choices"></div>
+  <canvas id="fx" width="200" height="140"></canvas>
+</div>
+<p class="score" id="score">Score : 0</p>
+<p class="credit">Effets : <a href="https://github.com/patch-gg/pixelfx">pixelfx</a> (licence MIT)</p>
+
+<script type="module">
+import { createFrame, clearFrame, createFx, composite } from "./vendor/pixelfx/src/core/index.js";
+import * as confetti from "./vendor/pixelfx/src/fx/ui/confetti.js";
+import * as coin from "./vendor/pixelfx/src/fx/ui/coin-collect.js";
+import * as heart from "./vendor/pixelfx/src/fx/ui/heart-lost.js";
+
+const LETTERS = [
+  ["ا","Alif"],["ب","Ba"],["ت","Ta"],["ث","Tha"],["ج","Jim"],["ح","Ha"],["خ","Kha"],["د","Dal"],
+  ["ر","Ra"],["س","Sin"],["ش","Shin"],["ص","Sad"],["ع","Ayn"],["ف","Fa"],["ق","Qaf"],["ك","Kaf"],
+  ["ل","Lam"],["م","Mim"],["ن","Nun"],["ه","Ha'"],["و","Waw"],["ي","Ya"]
+];
+
+const W = 200, H = 140;
+const canvas = document.getElementById("fx"), ctx = canvas.getContext("2d");
+const frame = createFrame(W, H), img = new ImageData(W, H);
+let active = [], last = 0, score = 0, streak = 0, seed = 1;
+
+function play(mod, x, y) {
+  active.push(createFx(mod, { x, y, seed: seed++ }));
+  if (active.length === 1) { last = performance.now(); requestAnimationFrame(tick); }
+}
+
+function tick(now) {
+  const dt = Math.min(0.05, (now - last) / 1000); last = now;
+  clearFrame(frame);
+  for (const fx of active) { fx.update(dt); fx.draw(frame); }
+  active = active.filter(fx => fx.t < (fx.meta.duration ?? 1));
+  composite(frame, img.data, null);
+  ctx.putImageData(img, 0, 0);
+  if (active.length) requestAnimationFrame(tick);
+  else ctx.clearRect(0, 0, W, H);
+}
+
+function shuffle(a) { for (let i = a.length - 1; i > 0; i--) { const j = Math.random() * (i + 1) | 0; [a[i], a[j]] = [a[j], a[i]]; } return a; }
+
+function round() {
+  const [ar, name] = LETTERS[Math.random() * LETTERS.length | 0];
+  const others = shuffle(LETTERS.filter(l => l[1] !== name)).slice(0, 2).map(l => l[1]);
+  document.getElementById("letter").textContent = ar;
+  const box = document.getElementById("choices"); box.innerHTML = "";
+  for (const opt of shuffle([name, ...others])) {
+    const b = document.createElement("button"); b.textContent = opt;
+    b.onclick = () => {
+      box.querySelectorAll("button").forEach(x => { x.disabled = true; if (x.textContent === name) x.classList.add("ok"); });
+      if (opt === name) {
+        score++; streak++;
+        // every third correct answer in a row: confetti, otherwise a coin reward
+        if (streak % 3 === 0) play(confetti, 100, 126); else play(coin, 70, 110);
+      } else {
+        streak = 0; b.classList.add("ko");
+        play(heart, 100, 60);
+      }
+      document.getElementById("score").textContent = `Score : ${score} · série : ${streak}`;
+      setTimeout(round, 1600);
+    };
+    box.appendChild(b);
+  }
+}
+round();
+</script>
+</body>
+</html>
