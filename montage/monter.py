@@ -176,7 +176,7 @@ def build_audio(path):
     mi = len(CLIPS) + 1
     graph = ";".join(parts) + ";" + "[v]" + "".join(labels) + \
         f"amix=inputs={len(CLIPS)+1}:normalize=0:duration=first,aformat=sample_rates=48000:channel_layouts=stereo,asplit=2[vo][sc];" \
-        f"[{mi}:a]volume=-17dB,aformat=sample_rates=48000:channel_layouts=stereo[m];" \
+        f"[{mi}:a]volume=-20dB,aformat=sample_rates=48000:channel_layouts=stereo[m];" \
         f"[m][sc]sidechaincompress=threshold=0.02:ratio=4:attack=20:release=400[md];" \
         f"[vo][md]amix=inputs=2:normalize=0:duration=first,alimiter=limit=0.9[a]"
     subprocess.run(["ffmpeg", "-y", "-loglevel", "error", *inputs, "-filter_complex", graph, "-map", "[a]",
