@@ -1,11 +1,11 @@
-# Montage « Bébé ou pas bébé » : questions calées sur les réponses, photos animées au-dessus de la tête.
-# Usage : python3 montage/monter.py   ->   montage/bebe-ou-pas-bebe.mp4
+# Montage « Bebew ou pas bebew » : questions calées sur les réponses, photos animées au-dessus de la tête.
+# Usage : python3 montage/monter.py   ->   montage/bebew-ou-pas-bebew.mp4
 import subprocess, os, numpy as np
 from PIL import Image, ImageDraw, ImageFont, ImageFilter, ImageOps
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 SRC = os.path.join(HERE, "src")
-OUT = os.path.join(HERE, "bebe-ou-pas-bebe.mp4")
+OUT = os.path.join(HERE, "bebew-ou-pas-bebew.mp4")
 W, H, FPS = 1080, 1920, 30
 DUR = 41.73
 FONT = "/usr/share/fonts/opentype/inter/Inter-Black.otf"
@@ -18,8 +18,11 @@ CLIPS = [
     (4.40, 6.85, 6.40),    # « premier, Passine »
     (7.85, 9.00, 10.55),   # « compréhensible »
     (9.20, 10.30, 11.70),  # « deuxième, Popo »
-    (12.68, 14.80, 14.95), # « troisième, Zemmour »
-    (18.10, 22.30, 21.10), # « ok, quatrième, Martin Luther King, on est d'accord sur celle-là »
+    (12.68, 13.35, 15.00), # « troisième »
+    (18.88, 20.05, 15.75), # « Martin Luther King »
+    (18.10, 18.88, 21.95), # « ok, quatrième »
+    (14.20, 14.80, 22.90), # « Zemmour »
+    (21.10, 22.30, 24.10), # « on est d'accord sur celle-là »
     (24.55, 27.20, 26.30), # « cinquième, Jeffrey Epstein »
     (30.55, 31.50, 32.60), # « sixième »
     (39.90, 41.35, 34.00), # « Adolphe Hitler »
@@ -27,14 +30,14 @@ CLIPS = [
 
 # --- photos : (fichier, nom affiché, apparition, verdict, moment du verdict, disparition)
 CARDS = [
-    ("passine.jpg", "PASSINE", 8.20, "BÉBÉ", 9.10, 11.60),
-    ("popo.png", "POPO", 12.10, "GROS BÉBÉ", 12.90, 15.60),
-    ("zemmour.jpg", "ZEMMOUR", 16.30, "PAS BÉBÉ", 17.60, 20.70),
-    ("mlk.jpg", "MARTIN LUTHER KING", 21.80, "BÉBÉ", 25.55, 26.50),
-    ("epstein.webp", "JEFFREY EPSTEIN", 27.30, "GIGA MÉGA BÉBÉ", 29.30, 32.30),
-    ("hitler.jpg", "ADOLF HITLER", 34.00, "DEMI BÉBÉ", 37.80, 39.90),
+    ("passine.jpg", "PASSINE", 8.20, "BEBEW", 9.10, 11.60),
+    ("popo.png", "POPO", 12.10, "GROS BEBEW", 12.90, 15.60),
+    ("mlk.jpg", "MARTIN LUTHER KING", 15.75, "PAS BEBEW", 17.60, 20.70),
+    ("zemmour.jpg", "ZEMMOUR", 22.85, "BEBEW", 25.55, 26.50),
+    ("epstein.webp", "JEFFREY EPSTEIN", 27.30, "GIGA MEGA BEBEW", 29.30, 32.30),
+    ("hitler.jpg", "ADOLF HITLER", 34.00, "DEMI BEBEW", 37.80, 39.90),
 ]
-TITLE = ("BÉBÉ OU PAS BÉBÉ ?", 0.6, 4.6)
+TITLE = ("BEBEW OU PAS BEBEW ?", 0.6, 4.6)
 
 CARD_W, CARD_TOP = 600, 210
 YELLOW, BLACK, WHITE, RED, GREEN = (255, 214, 0), (12, 12, 12), (255, 255, 255), (235, 50, 60), (40, 200, 110)
